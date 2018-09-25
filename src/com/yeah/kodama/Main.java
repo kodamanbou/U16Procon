@@ -10,6 +10,17 @@ public class Main {
         int port = Integer.parseInt(new Scanner(System.in).nextLine());
         System.out.println("IPアドレス？");
         String ip = new Scanner(System.in).nextLine();
+
+        int turn = 0;
         Client target = new Client(ip, port);
+
+        while (true) {
+            if (turn >= 100) {
+                break;
+            }
+            int[] value = target.getReady();
+
+            turn++;
+        }
     }
 }
