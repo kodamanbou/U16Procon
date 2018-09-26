@@ -12,7 +12,7 @@ public class Agent {
     private double learning_rate = 0.10;
     private double epsilon = 0.30;
 
-    private final int HIT_WALL_PENALTY = 100;           //ペナルティはあとで調整が必要
+    private final int HIT_WALL_PENALTY = 100;           //ペナルティはあとで調整
     private final int ENEMY_ENCOUNTER_PENALTY = 100;
     private final int GET_ITEM_REWARD = 10;
     private final int ONE_STEP_PENALTY = 1;
