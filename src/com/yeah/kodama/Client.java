@@ -23,7 +23,13 @@ public class Client {
     }
 
     public void sendCommand(String cmd) {
-        writer.println(cmd);
+        try {
+            writer.println(cmd);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close();
+        }
     }
 
     public void close() {
@@ -52,12 +58,90 @@ public class Client {
             }
         } catch (IOException ie) {
             ie.printStackTrace();
+        } finally {
+            close();
         }
         return value;
     }
 
-    public void WalkUp() {
+    public int[] walkUp() {
         sendCommand("wu");
+        return receive();
+    }
+
+    public int[] walkRight() {
+        sendCommand("wr");
+        return receive();
+    }
+
+    public int[] walkLeft() {
+        sendCommand("wl");
+        return receive();
+    }
+
+    public int[] walkDown() {
+        sendCommand("wd");
+        return receive();
+    }
+
+    public int[] lookUp() {
+        sendCommand("lu");
+        return receive();
+    }
+
+    public int[] lookRight() {
+        sendCommand("lr");
+        return receive();
+    }
+
+    public int[] lookLeft() {
+        sendCommand("ll");
+        return receive();
+    }
+
+    public int[] lookDown() {
+        sendCommand("ld");
+        return receive();
+    }
+
+    public int[] searchUp() {
+        sendCommand("su");
+        return receive();
+    }
+
+    public int[] searchRight() {
+        sendCommand("sr");
+        return receive();
+    }
+
+    public int[] searchLeft() {
+        sendCommand("sl");
+        return receive();
+    }
+
+    public int[] searchDown() {
+        sendCommand("sd");
+        return receive();
+    }
+
+    public int[] putUp() {
+        sendCommand("pu");
+        return receive();
+    }
+
+    public int[] putRight() {
+        sendCommand("pr");
+        return receive();
+    }
+
+    public int[] putLeft() {
+        sendCommand("pl");
+        return receive();
+    }
+
+    public int[] putDown() {
+        sendCommand("pd");
+        return receive();
     }
 
 }
