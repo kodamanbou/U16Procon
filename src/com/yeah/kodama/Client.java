@@ -50,6 +50,7 @@ public class Client {
     }
 
     public int[] getReady() {
+        sendCommand("gr");
         return receive();
     }
 
