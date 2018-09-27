@@ -19,6 +19,7 @@ public class Client {
             writer = new PrintWriter(sock.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             writer.println(team);
+            System.out.println("チーム名 : " + team);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
