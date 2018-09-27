@@ -22,7 +22,6 @@ public class Client {
             System.out.println("チーム名 : " + team);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             close();
         }
     }
@@ -32,7 +31,6 @@ public class Client {
             writer.println(cmd);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             close();
         }
     }
@@ -64,7 +62,6 @@ public class Client {
             }
         } catch (IOException ie) {
             ie.printStackTrace();
-        } finally {
             close();
         }
         return value;
