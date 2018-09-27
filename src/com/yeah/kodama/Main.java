@@ -20,6 +20,16 @@ public class Main {
             }
             int[] value = target.getReady();
 
+            if (value[1] != 2) {
+                value = target.walkUp();
+            } else if (value[3] != 2) {
+                value = target.walkLeft();
+            } else if (value[5] != 2) {
+                value = target.walkRight();
+            } else {
+                value = target.walkDown();
+            }
+
             turn++;
         }
     }
