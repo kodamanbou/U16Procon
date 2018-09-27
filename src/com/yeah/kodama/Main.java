@@ -10,9 +10,11 @@ public class Main {
         int port = Integer.parseInt(new Scanner(System.in).nextLine());
         System.out.println("IPアドレス？");
         String ip = new Scanner(System.in).nextLine();
+        System.out.println("チーム名？");
+        String team_name = new Scanner(System.in).nextLine();
 
         int turn = 0;
-        Client target = new Client(ip, port);
+        Client target = new Client(ip, port, team_name);
 
         while (true) {
             if (turn >= 100) {

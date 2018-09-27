@@ -11,14 +11,18 @@ public class Client {
     private PrintWriter writer = null;
     private BufferedReader reader = null;
 
-    public Client(String ip, int port) {
+    public Client(String ip, int port, String team) {
         try {
             sock = new Socket(ip, port);
+            Thread.sleep(100);
+            System.out.println("接続できたお");
             writer = new PrintWriter(sock.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            writer.println(team);
         } catch (Exception e) {
-            close();
             e.printStackTrace();
+        } finally {
+            close();
         }
     }
 
