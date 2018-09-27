@@ -9,13 +9,13 @@ public class Client {
 
     private Socket sock = null;
     private PrintWriter writer = null;
-    private InputStream is = null;
+    private BufferedReader reader = null;
 
     public Client(String ip, int port) {
         try {
             sock = new Socket(ip, port);
             writer = new PrintWriter(sock.getOutputStream(), true);
-            is = sock.getInputStream();
+            reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
         } catch (Exception e) {
             close();
             e.printStackTrace();
@@ -40,15 +40,24 @@ public class Client {
     }
 
     public int[] getReady() {
-        byte[] data = new byte[1024];
+        return receive();
+    }
+
+    public int[] receive() {
         int[] value = new int[9];
         try {
-            while (is.available() == 0);
-            while (is.read(data) != -1);
+            String[] data = reader.readLine().split("");
+            for (int i = 0; i < 9; i++) {
+                value[i] = Integer.parseInt(data[i + 1]);
+            }
         } catch (IOException ie) {
             ie.printStackTrace();
         }
         return value;
+    }
+
+    public void WalkUp() {
+        sendCommand("wu");
     }
 
 }
