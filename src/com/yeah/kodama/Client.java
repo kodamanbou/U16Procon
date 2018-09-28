@@ -26,6 +26,19 @@ public class Client {
         }
     }
 
+    public boolean checkIfStart() {
+        try {
+            String atmark = reader.readLine();
+            System.out.println(atmark);
+            if (atmark.equals("@")) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public void sendCommand(String cmd) {
         try {
             writer.println(cmd);
@@ -33,6 +46,7 @@ public class Client {
             e.printStackTrace();
             close();
         }
+        System.out.println(cmd + " Excuted.");
     }
 
     public void close() {
@@ -56,7 +70,9 @@ public class Client {
     public int[] receive() {
         int[] value = new int[9];
         try {
-            String[] data = reader.readLine().split("");
+            String line = reader.readLine();
+            System.out.println(line);
+            String[] data = line.split("");
             for (int i = 0; i < 9; i++) {
                 value[i] = Integer.parseInt(data[i + 1]);
             }

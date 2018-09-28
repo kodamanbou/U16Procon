@@ -15,6 +15,7 @@ public class Main {
 
         int turn = 0;
         Client target = new Client(ip, port, team_name);
+        target.checkIfStart();
 
         while (true) {
             if (turn >= 100) {
