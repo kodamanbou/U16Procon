@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        // write your code here
         System.out.println("ポート番号？");
         int port = Integer.parseInt(new Scanner(System.in).nextLine());
         System.out.println("IPアドレス？");
@@ -15,7 +15,7 @@ public class Main {
 
         int turn = 0;
         Client target = new Client(ip, port, team_name);
-        target.checkIfStart();
+        if (!target.checkIfStart()) System.out.println("接続失敗");
 
         while (true) {
             if (turn >= 100) {

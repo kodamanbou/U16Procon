@@ -15,7 +15,7 @@ public class Client {
         try {
             sock = new Socket(ip, port);
             Thread.sleep(100);
-            System.out.println("接続できたお");
+            System.out.println("接続完了");
             writer = new PrintWriter(sock.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             writer.println(team);
