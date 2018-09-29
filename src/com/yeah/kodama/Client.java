@@ -15,7 +15,7 @@ public class Client {
         try {
             sock = new Socket(ip, port);
             Thread.sleep(100);
-            System.out.println("接続完了");
+            System.out.println("接続が完了したぞ！");
             writer = new PrintWriter(sock.getOutputStream(), true);
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             writer.println(team);
@@ -85,82 +85,114 @@ public class Client {
 
     public int[] walkUp() {
         sendCommand("wu");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] walkRight() {
         sendCommand("wr");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] walkLeft() {
         sendCommand("wl");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] walkDown() {
         sendCommand("wd");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] lookUp() {
         sendCommand("lu");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] lookRight() {
         sendCommand("lr");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] lookLeft() {
         sendCommand("ll");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] lookDown() {
         sendCommand("ld");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] searchUp() {
         sendCommand("su");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] searchRight() {
         sendCommand("sr");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] searchLeft() {
         sendCommand("sl");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] searchDown() {
         sendCommand("sd");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] putUp() {
         sendCommand("pu");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] putRight() {
         sendCommand("pr");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] putLeft() {
         sendCommand("pl");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
     public int[] putDown() {
         sendCommand("pd");
-        return receive();
+        int[] result = receive();
+        sendCommand("#");
+        return result;
     }
 
 }

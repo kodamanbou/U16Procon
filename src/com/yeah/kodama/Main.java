@@ -15,7 +15,10 @@ public class Main {
 
         int turn = 0;
         Client target = new Client(ip, port, team_name);
-        if (!target.checkIfStart()) System.out.println("接続失敗");
+        if (!target.checkIfStart()) {
+            System.out.println("接続がうまくいっておらぬぞ？ご主人？");
+            System.exit(1);
+        }
 
         while (true) {
             if (turn >= 100) {
