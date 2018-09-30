@@ -26,7 +26,7 @@ public class Client {
         }
     }
 
-    public boolean checkIfStart() {
+    private boolean checkIfStart() {
         try {
             String atmark = reader.readLine();
             System.out.println(atmark);
@@ -39,17 +39,17 @@ public class Client {
         return false;
     }
 
-    public void sendCommand(String cmd) {
+    private void sendCommand(String cmd) {
         try {
             os.write((cmd + "\r\n").getBytes("Shift-JIS"));
         } catch (Exception e) {
             e.printStackTrace();
             close();
         }
-        System.out.println(cmd + " Excuted.");
+        System.out.println(cmd + " executed.");
     }
 
-    public void close() {
+    private void close() {
         try {
             if (sock != null) {
                 sock.close();
@@ -71,12 +71,15 @@ public class Client {
         return receive();
     }
 
-    public int[] receive() {
+    private int[] receive() {
         int[] value = new int[9];
         try {
             String line = reader.readLine();
             System.out.println(line);
             String[] data = line.split("");
+
+            if (data[0].equals("0")) System.exit(0);
+
             for (int i = 0; i < 9; i++) {
                 value[i] = Integer.parseInt(data[i + 1]);
             }

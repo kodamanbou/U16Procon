@@ -1,5 +1,6 @@
 package com.yeah.kodama;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -15,6 +16,7 @@ public class Main {
 
         int turn = 0;
         Client target = new Client(ip, port, team_name);
+        Agent ai = new Agent();
 
         while (true) {
 
@@ -22,15 +24,22 @@ public class Main {
                 break;
             }
             int[] value = target.getReady();
+            ai.init();
+            ai.infoSearch(value);
 
-            if (value[1] != 2) {
-                value = target.walkUp();
-            } else if (value[3] != 2) {
-                value = target.walkLeft();
-            } else if (value[5] != 2) {
-                value = target.walkRight();
-            } else {
-                value = target.walkDown();
+            switch (ai.chooseAction()) {
+                case WalkUp:
+                    value = target.walkUp();
+                    break;
+                case WalkRight:
+                    value = target.walkRight();
+                    break;
+                case WalkLeft:
+                    value = target.walkLeft();
+                    break;
+                case WalkDown:
+                    value = target.walkDown();
+                    break;
             }
 
             turn++;
