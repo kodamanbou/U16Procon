@@ -3,28 +3,22 @@ package com.yeah.kodama;
 import java.io.*;
 import java.net.Socket;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.concurrent.ExecutionException;
 
 public class Client {
 
     private Socket sock = null;
-    private PrintWriter writer = null;
-    private InputStream is = null;
-    private OutputStream os = null;
     private BufferedReader reader = null;
+    private OutputStream os = null;
 
     public Client(String ip, int port, String team) {
         try {
             sock = new Socket(ip, port);
             Thread.sleep(100);
-            System.out.println("接続完了");
-            is = sock.getInputStream();
+            System.out.println("接続が完了しました");
             os = sock.getOutputStream();
-            writer = new PrintWriter(os, true);
-            reader = new BufferedReader(new InputStreamReader(is));
-            writer.println(team);
+            reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            os.write(team.getBytes("Shift-JIS"));
             System.out.println("チーム名 : " + team);
         } catch (Exception e) {
             e.printStackTrace();
@@ -47,7 +41,7 @@ public class Client {
 
     public void sendCommand(String cmd) {
         try {
-            writer.println(cmd);
+            os.write((cmd + "\r\n").getBytes("Shift-JIS"));
         } catch (Exception e) {
             e.printStackTrace();
             close();
@@ -60,8 +54,8 @@ public class Client {
             if (sock != null) {
                 sock.close();
             }
-            if (writer != null) {
-                writer.close();
+            if (os != null) {
+                os.close();
             }
         } catch (IOException ie) {
             ie.printStackTrace();
@@ -69,23 +63,22 @@ public class Client {
     }
 
     public int[] getReady() {
-        sendCommand("gr");
+        if (checkIfStart()) {
+            sendCommand("gr");
+        } else {
+            System.exit(1);
+        }
         return receive();
     }
 
     public int[] receive() {
         int[] value = new int[9];
         try {
-            //ここにInputStreamを使ってreadする処理を書く.
-            int datasize = 10;
-            byte[] data = new byte[datasize];
-            int size = is.available();
-
-            if (size >= datasize) {
-                is.read(data, 0, datasize);
-                ByteBuffer bf = ByteBuffer.wrap(data);
-                bf.order(ByteOrder.LITTLE_ENDIAN);
-                System.out.println(bf.getChar());
+            String line = reader.readLine();
+            System.out.println(line);
+            String[] data = line.split("");
+            for (int i = 0; i < 9; i++) {
+                value[i] = Integer.parseInt(data[i + 1]);
             }
         } catch (IOException ie) {
             ie.printStackTrace();
