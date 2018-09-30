@@ -40,6 +40,42 @@ public class Main {
                 case WalkDown:
                     value = target.walkDown();
                     break;
+                case LookUp:
+                    value = target.lookUp();
+                    break;
+                case LookRight:
+                    value = target.lookRight();
+                    break;
+                case LookLeft:
+                    value = target.lookLeft();
+                    break;
+                case LookDown:
+                    value = target.lookDown();
+                    break;
+                case SearchUp:
+                    value = target.searchUp();
+                    break;
+                case SearchRight:
+                    value = target.searchRight();
+                    break;
+                case SearchLeft:
+                    value = target.searchLeft();
+                    break;
+                case SearchDown:
+                    value = target.searchDown();
+                    break;
+                case PutUp:
+                    value = target.putUp();
+                    break;
+                case PutRight:
+                    value = target.putRight();
+                    break;
+                case PutLeft:
+                    value = target.putLeft();
+                    break;
+                case PutDown:
+                    value = target.putDown();
+                    break;
             }
 
             turn++;

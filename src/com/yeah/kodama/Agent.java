@@ -7,7 +7,6 @@ import java.util.Random;
 
 public class Agent {
 
-    private HashMap<Point, Action> qmap = new HashMap<>();
     private double gamma = 0.99;
     private double learning_rate = 0.5;
     private double epsilon = 0.30;
@@ -19,7 +18,8 @@ public class Agent {
     private final int ENEMY_DEFEAT_REWARD = 100;
     private final int GET_ITEM_REWARD = 10;
 
-    private ArrayList<Action> movableLocation = new ArrayList<>();
+    private HashMap<Action, Float> qmap = new HashMap<>();
+    private ArrayList<Action> actions = new ArrayList<>();
 
     public enum Action {
         WalkUp,
@@ -45,23 +45,34 @@ public class Agent {
     }
 
     public void init() {
-        movableLocation.clear();
-        movableLocation.add(Action.WalkUp);
-        movableLocation.add(Action.WalkRight);
-        movableLocation.add(Action.WalkLeft);
-        movableLocation.add(Action.WalkDown);
+        actions.clear();
+        for (Action a : Action.values()) {
+            qmap.put(a, 0.0f);  //Q値の初期化.
+        }
     }
 
     public void infoSearch(int[] state) {
-        if (state[1] == 2) movableLocation.remove(Action.WalkUp);
-        if (state[3] == 2) movableLocation.remove(Action.WalkLeft);
-        if (state[5] == 2) movableLocation.remove(Action.WalkRight);
-        if (state[7] == 2) movableLocation.remove(Action.WalkDown);
+        //ここで細かいペナルティーを設定していく.
+        if (state[1] == 2) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY - ONE_STEP_PENALTY);
+        if (state[3] == 2) qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - HIT_WALL_PENALTY - ONE_STEP_PENALTY);
+        if (state[5] == 2) qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - HIT_WALL_PENALTY - ONE_STEP_PENALTY);
+        if (state[7] == 2) qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - HIT_WALL_PENALTY - ONE_STEP_PENALTY);
     }
 
     public Action chooseAction() {
         Random rand = new Random();
-        return movableLocation.get(rand.nextInt(movableLocation.size()));
+        float max_q = -999.0f;
+        for (Action act : qmap.keySet()) {
+            if (qmap.get(act) > max_q) {
+                max_q = qmap.get(act);
+                actions.clear();
+                actions.add(act);
+            } else if (qmap.get(act) == max_q) {
+                actions.add(act);
+            }
+        }
+
+        return actions.get(rand.nextInt(actions.size()));
     }
 
 }
