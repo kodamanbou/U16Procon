@@ -3,21 +3,27 @@ package com.yeah.kodama;
 import java.io.*;
 import java.net.Socket;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.concurrent.ExecutionException;
 
 public class Client {
 
     private Socket sock = null;
     private PrintWriter writer = null;
+    private InputStream is = null;
+    private OutputStream os = null;
     private BufferedReader reader = null;
 
     public Client(String ip, int port, String team) {
         try {
             sock = new Socket(ip, port);
             Thread.sleep(100);
-            System.out.println("接続が完了したぞ！");
-            writer = new PrintWriter(sock.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            System.out.println("接続完了");
+            is = sock.getInputStream();
+            os = sock.getOutputStream();
+            writer = new PrintWriter(os, true);
+            reader = new BufferedReader(new InputStreamReader(is));
             writer.println(team);
             System.out.println("チーム名 : " + team);
         } catch (Exception e) {
@@ -70,11 +76,16 @@ public class Client {
     public int[] receive() {
         int[] value = new int[9];
         try {
-            String line = reader.readLine();
-            System.out.println(line);
-            String[] data = line.split("");
-            for (int i = 0; i < 9; i++) {
-                value[i] = Integer.parseInt(data[i + 1]);
+            //ここにInputStreamを使ってreadする処理を書く.
+            int datasize = 10;
+            byte[] data = new byte[datasize];
+            int size = is.available();
+
+            if (size >= datasize) {
+                is.read(data, 0, datasize);
+                ByteBuffer bf = ByteBuffer.wrap(data);
+                bf.order(ByteOrder.LITTLE_ENDIAN);
+                System.out.println(bf.getChar());
             }
         } catch (IOException ie) {
             ie.printStackTrace();
