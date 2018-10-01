@@ -1,15 +1,12 @@
 package com.yeah.kodama;
 
-public final class Environment {
+import com.sun.tools.doclint.Env;
 
-    private static Environment theInstance;
-    private Environment() {}    //シングルトンパターン
+import java.awt.*;
+import java.util.ArrayList;
 
-    public static Environment getInstance() {
-        if (theInstance == null) {
-            theInstance = new Environment();
-        }
-        return theInstance;
+public class Environment {
+
+    public Environment(Point origin) {
     }
-
 }
