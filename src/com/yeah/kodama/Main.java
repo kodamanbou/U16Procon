@@ -25,7 +25,7 @@ public class Main {
             }
             int[] value = target.getReady();
             ai.init();
-            ai.infoSearch(value);
+            ai.evaluate(value);
 
             switch (ai.chooseAction()) {
                 case WalkUp:

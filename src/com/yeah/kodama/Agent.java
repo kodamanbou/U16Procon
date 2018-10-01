@@ -51,7 +51,7 @@ public class Agent {
         }
     }
 
-    public void infoSearch(int[] state) {
+    public void evaluate(int[] state) {
         //ここで細かいペナルティーを設定していく.
         if (state[1] == 2) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY - ONE_STEP_PENALTY);
         if (state[3] == 2) qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - HIT_WALL_PENALTY - ONE_STEP_PENALTY);
