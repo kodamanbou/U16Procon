@@ -60,6 +60,11 @@ public class Agent {
         if (state[7] == 2) qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - HIT_WALL_PENALTY);
 
         //アイテムを取得した時に、評価を上げる。但し、アイテムをとってブロックに囲まれるなら、評価を下げる。
+        if (state[1] == 3) {
+            if (state[0] != 2 || state[2] != 2) {
+                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_ITEM_REWARD);
+            }
+        }
     }
 
     public Action chooseAction() {
