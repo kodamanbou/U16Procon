@@ -19,6 +19,11 @@ public class Agent {
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 10;
 
+    private static final int FLOOR = 0,
+                             ENEMY = 1,
+                             BLOCK = 2,
+                             ITEM = 3;
+
     private HashMap<Action, Float> qmap = new HashMap<>();
     private ArrayList<Action> actions = new ArrayList<>();
 
@@ -55,38 +60,38 @@ public class Agent {
     public void evaluate(int[] state) {
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
-        if (state[1] == 2) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY);
-        if (state[3] == 2) qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - HIT_WALL_PENALTY);
-        if (state[5] == 2) qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - HIT_WALL_PENALTY);
-        if (state[7] == 2) qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - HIT_WALL_PENALTY);
+        if (state[1] == BLOCK) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY);
+        if (state[3] == BLOCK) qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - HIT_WALL_PENALTY);
+        if (state[5] == BLOCK) qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - HIT_WALL_PENALTY);
+        if (state[7] == BLOCK) qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - HIT_WALL_PENALTY);
 
         //アイテムを取得した時に、評価を上げる。但し、アイテムをとってブロックに囲まれるなら、評価を下げる。
-        if (state[1] == 3) {
-            if (state[0] != 2 || state[2] != 2) {
+        if (state[1] == ITEM) {
+            if (state[0] != BLOCK || state[2] != BLOCK) {
                 qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_ITEM_REWARD);
             } else {
                 qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - SELF_KILL_PENALTY);
             }
         }
 
-        if (state[3] == 3) {
-            if (state[0] != 2 || state[6] != 2) {
+        if (state[3] == ITEM) {
+            if (state[0] != BLOCK || state[6] != BLOCK) {
                 qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_ITEM_REWARD);
             } else {
                 qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - SELF_KILL_PENALTY);
             }
         }
 
-        if (state[5] == 3) {
-            if (state[2] != 2 || state[8] != 2) {
+        if (state[5] == ITEM) {
+            if (state[2] != BLOCK || state[8] != BLOCK) {
                 qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_ITEM_REWARD);
             } else {
                 qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + SELF_KILL_PENALTY);
             }
         }
 
-        if (state[7] == 3) {
-            if (state[6] != 2 || state[8] != 2) {
+        if (state[7] == ITEM) {
+            if (state[6] != BLOCK || state[8] != BLOCK) {
                 qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_ITEM_REWARD);
             } else {
                 qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - SELF_KILL_PENALTY);
@@ -94,10 +99,10 @@ public class Agent {
         }
 
         //敵と遭遇した時にkillする行動を評価する処理.
-        if (state[1] == 1) qmap.put(Action.PutUp, qmap.get(Action.PutUp) + ENEMY_DEFEAT_REWARD);
-        if (state[3] == 1) qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) + ENEMY_DEFEAT_REWARD);
-        if (state[5] == 1) qmap.put(Action.PutRight, qmap.get(Action.PutRight) + ENEMY_DEFEAT_REWARD);
-        if (state[7] == 1) qmap.put(Action.PutDown, qmap.get(Action.PutDown) + ENEMY_DEFEAT_REWARD);
+        if (state[1] == ENEMY) qmap.put(Action.PutUp, qmap.get(Action.PutUp) + ENEMY_DEFEAT_REWARD);
+        if (state[3] == ENEMY) qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) + ENEMY_DEFEAT_REWARD);
+        if (state[5] == ENEMY) qmap.put(Action.PutRight, qmap.get(Action.PutRight) + ENEMY_DEFEAT_REWARD);
+        if (state[7] == ENEMY) qmap.put(Action.PutDown, qmap.get(Action.PutDown) + ENEMY_DEFEAT_REWARD);
     }
 
     public Action chooseAction() {
