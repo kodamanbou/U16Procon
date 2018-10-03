@@ -18,6 +18,7 @@ public class Agent {
     private static final int SELF_KILL_PENALTY = 100;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 10;
+    private static final int GET_CLOSE_REWARD = 5;
 
     private static final int FLOOR = 0,
                              ENEMY = 1,
@@ -95,6 +96,43 @@ public class Agent {
                 qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_ITEM_REWARD);
             } else {
                 qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - SELF_KILL_PENALTY);
+            }
+        }
+
+        //斜めアイテム取得のための移動を評価.
+        if (state[0] == ITEM) {
+            if (state[1] != BLOCK) {
+                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_CLOSE_REWARD);
+            }
+            if (state[3] != BLOCK) {
+                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_CLOSE_REWARD);
+            }
+        }
+
+        if (state[2] == ITEM) {
+            if (state[1] != BLOCK) {
+                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_CLOSE_REWARD);
+            }
+            if (state[5] != BLOCK) {
+                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_CLOSE_REWARD);
+            }
+        }
+
+        if (state[6] == ITEM) {
+            if (state[3] != BLOCK) {
+                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_CLOSE_REWARD);
+            }
+            if (state[7] != BLOCK) {
+                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_CLOSE_REWARD);
+            }
+        }
+
+        if (state[8] == ITEM) {
+            if (state[5] != BLOCK) {
+                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_CLOSE_REWARD);
+            }
+            if (state[7] != BLOCK) {
+                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_CLOSE_REWARD);
             }
         }
 
