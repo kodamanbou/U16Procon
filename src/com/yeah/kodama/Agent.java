@@ -28,6 +28,9 @@ public class Agent {
     private HashMap<Action, Float> qmap = new HashMap<>();
     private ArrayList<Action> actions = new ArrayList<>();
 
+    private int x = 0,      //スタート地点からの相対座標.
+                y = 0;
+
     public enum Action {
         WalkUp,
         WalkRight,
@@ -156,7 +159,22 @@ public class Agent {
             qmap.put(Action.PutDown, qmap.get(Action.PutDown) - SELF_KILL_PENALTY);
         }
 
-        //TODO 敵が斜め方向にいる時、敵前に飛び出す行動の評価を下げる.
+        //敵が斜め方向にいる時、敵前に飛び出す行動の評価を下げる.
+        if (state[0] == ENEMY) {
+            qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - ENEMY_ENCOUNTER_PENALTY);
+            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - ENEMY_ENCOUNTER_PENALTY);
+        } else if (state[2] == ENEMY) {
+            qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - ENEMY_ENCOUNTER_PENALTY);
+            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - ENEMY_ENCOUNTER_PENALTY);
+        } else if (state[6] == ENEMY) {
+            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - ENEMY_ENCOUNTER_PENALTY);
+            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - ENEMY_ENCOUNTER_PENALTY);
+        } else if (state[8] == ENEMY) {
+            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - ENEMY_ENCOUNTER_PENALTY);
+            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - ENEMY_ENCOUNTER_PENALTY);
+        }
+
+        //TODO やったらめったらPutしないようにする.(Mapを作成し、まだ通ってない座標にPutしたら若干のペナルティを与える)
     }
 
     public Action chooseAction() {
