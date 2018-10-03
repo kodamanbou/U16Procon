@@ -155,6 +155,8 @@ public class Agent {
         if (state[1] == BLOCK && state[3] == BLOCK && state[5] == BLOCK) {
             qmap.put(Action.PutDown, qmap.get(Action.PutDown) - SELF_KILL_PENALTY);
         }
+
+        //TODO 敵が斜め方向にいる時、敵前に飛び出す行動の評価を下げる.
     }
 
     public Action chooseAction() {
