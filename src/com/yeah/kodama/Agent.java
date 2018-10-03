@@ -103,6 +103,20 @@ public class Agent {
         if (state[3] == ENEMY) qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) + ENEMY_DEFEAT_REWARD);
         if (state[5] == ENEMY) qmap.put(Action.PutRight, qmap.get(Action.PutRight) + ENEMY_DEFEAT_REWARD);
         if (state[7] == ENEMY) qmap.put(Action.PutDown, qmap.get(Action.PutDown) + ENEMY_DEFEAT_REWARD);
+
+        //三方向をブロックで囲まれているときに、残りのFloorにブロックを置くと評価を下げる処理。
+        if (state[3] == BLOCK && state[5] == BLOCK && state[7] == BLOCK) {
+            qmap.put(Action.PutUp, qmap.get(Action.PutUp) - SELF_KILL_PENALTY);
+        }
+        if (state[1] == BLOCK && state[5] == BLOCK && state[7] == BLOCK) {
+            qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - SELF_KILL_PENALTY);
+        }
+        if (state[1] == BLOCK && state[3] == BLOCK && state[7] == BLOCK) {
+            qmap.put(Action.PutRight, qmap.get(Action.PutRight) - SELF_KILL_PENALTY);
+        }
+        if (state[1] == BLOCK && state[3] == BLOCK && state[5] == BLOCK) {
+            qmap.put(Action.PutDown, qmap.get(Action.PutDown) - SELF_KILL_PENALTY);
+        }
     }
 
     public Action chooseAction() {
