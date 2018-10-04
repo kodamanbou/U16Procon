@@ -14,8 +14,8 @@ public class Main {
         String team_name = "kodamanbou";
 
         int turn = 0;
-        Client target = new Client(ip, port, team_name);
-        Agent ai = new Agent();
+        Client target = new Client(ip, port, team_name);    //クライアント生成.
+        Agent ai = new Agent();                             //エージェント生成.
 
         while (true) {
 
@@ -23,7 +23,7 @@ public class Main {
                 break;
             }
             int[] value = target.getReady();
-            ai.init();
+            ai.init(value[4]);
             ai.evaluate(value);
 
             switch (ai.chooseAction()) {

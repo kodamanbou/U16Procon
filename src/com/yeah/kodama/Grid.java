@@ -12,6 +12,7 @@ public class Grid {
     public Grid(Point coord, int id) {
         this.coord = coord;
         this.id = id;
+        this.q_table = new HashMap<>();
     }
 
     public int getId() {
@@ -26,7 +27,10 @@ public class Grid {
         return q_table;
     }
 
-    public void setQ_table(HashMap<Agent.Action, Float> q_table) {
+    public void setQ_table(HashMap<Agent.Action, Float> q_map) {
         //DeepCopy.
+        for (Agent.Action action : q_map.keySet()) {
+            this.q_table.put(action, q_map.get(action));
+        }
     }
 }

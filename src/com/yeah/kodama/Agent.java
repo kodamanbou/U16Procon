@@ -18,18 +18,22 @@ public class Agent {
     private static final int SELF_KILL_PENALTY = 100;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 10;
-    private static final int GET_CLOSE_REWARD = 5;
+    private static final int ITEM_CLOSE_REWARD = 5;
+    private static final int ITEM_CHECK_REWARD = 5;
 
     private static final int FLOOR = 0,
                              ENEMY = 1,
                              BLOCK = 2,
                              ITEM = 3;
 
-    private HashMap<Action, Float> qmap = new HashMap<>();
-    private ArrayList<Action> actions = new ArrayList<>();
+    private HashMap<Action, Float> qmap;
+    private ArrayList<Action> actions;
 
     private int x = 0,      //スタート地点からの相対座標.
                 y = 0;
+
+    private ArrayList<Grid> grids;
+    private Grid current;
 
     public enum Action {
         WalkUp,
@@ -51,14 +55,18 @@ public class Agent {
     }
 
     public Agent() {
-        //何かしらの初期化処理.
+        //コンストラクタ
+        qmap = new HashMap<>();
+        actions = new ArrayList<>();
+        grids = new ArrayList<>();
     }
 
-    public void init() {
+    public void init(Point current, int id) {
         actions.clear();
         for (Action a : Action.values()) {
             qmap.put(a, 0.0f);  //Q値の初期化.
         }
+        this.current;
     }
 
     public void evaluate(int[] state) {
@@ -105,37 +113,37 @@ public class Agent {
         //斜めアイテム取得のための移動を評価.
         if (state[0] == ITEM) {
             if (state[1] != BLOCK) {
-                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + ITEM_CLOSE_REWARD);
             }
             if (state[3] != BLOCK) {
-                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + ITEM_CLOSE_REWARD);
             }
         }
 
         if (state[2] == ITEM) {
             if (state[1] != BLOCK) {
-                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + ITEM_CLOSE_REWARD);
             }
             if (state[5] != BLOCK) {
-                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + ITEM_CLOSE_REWARD);
             }
         }
 
         if (state[6] == ITEM) {
             if (state[3] != BLOCK) {
-                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + ITEM_CLOSE_REWARD);
             }
             if (state[7] != BLOCK) {
-                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + ITEM_CLOSE_REWARD);
             }
         }
 
         if (state[8] == ITEM) {
             if (state[5] != BLOCK) {
-                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + ITEM_CLOSE_REWARD);
             }
             if (state[7] != BLOCK) {
-                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_CLOSE_REWARD);
+                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + ITEM_CLOSE_REWARD);
             }
         }
 
