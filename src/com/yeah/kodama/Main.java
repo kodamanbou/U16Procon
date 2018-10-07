@@ -16,6 +16,8 @@ public class Main {
         int turn = 0;
         Client target = new Client(ip, port, team_name);    //クライアント生成.
         Agent ai = new Agent();                             //エージェント生成.
+        int x = 0;
+        int y = 0;      //相対座標.
 
         while (true) {
 
@@ -23,17 +25,20 @@ public class Main {
                 break;
             }
             int[] value = target.getReady();
-            ai.init(value[4]);
+            ai.init(x, y, value[4]);
             ai.evaluate(value);
 
             switch (ai.chooseAction()) {
                 case WalkUp:
+                    y--;
                     value = target.walkUp();
                     break;
                 case WalkRight:
+                    x++;
                     value = target.walkRight();
                     break;
                 case WalkLeft:
+                    x--;
                     value = target.walkLeft();
                     break;
                 case WalkDown:

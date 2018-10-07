@@ -29,11 +29,8 @@ public class Agent {
     private HashMap<Action, Float> qmap;
     private ArrayList<Action> actions;
 
-    private int x = 0,      //スタート地点からの相対座標.
-                y = 0;
-
-    private ArrayList<Grid> grids;
-    private Grid current;
+    private ArrayList<Path> paths;
+    private Path current;
 
     public enum Action {
         WalkUp,
@@ -58,15 +55,16 @@ public class Agent {
         //コンストラクタ
         qmap = new HashMap<>();
         actions = new ArrayList<>();
-        grids = new ArrayList<>();
+        paths = new ArrayList<>();
     }
 
-    public void init(Point current, int id) {
+    public void init(int x, int y, int id) {
         actions.clear();
         for (Action a : Action.values()) {
             qmap.put(a, 0.0f);  //Q値の初期化.
         }
-        this.current;
+        this.current = new Path(new Point(x, y), id);
+        paths.add(current);
     }
 
     public void evaluate(int[] state) {

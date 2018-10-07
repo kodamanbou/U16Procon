@@ -3,13 +3,13 @@ package com.yeah.kodama;
 import java.awt.*;
 import java.util.HashMap;
 
-public class Grid {
+public class Path {
 
     private Point coord;
     private HashMap<Agent.Action, Float> q_table;
     private int id;
 
-    public Grid(Point coord, int id) {
+    public Path(Point coord, int id) {
         this.coord = coord;
         this.id = id;
         this.q_table = new HashMap<>();
