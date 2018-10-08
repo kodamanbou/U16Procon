@@ -21,14 +21,12 @@ public class Main {
 
         while (true) {
 
-            if (turn >= 100) {
-                break;
-            }
             int[] value = target.getReady();
-            ai.init(x, y, value[4]);
+            ai.init(x, y);
             ai.evaluate(value);
+            Agent.Action action = ai.chooseAction();
 
-            switch (ai.chooseAction()) {
+            switch (action) {
                 case WalkUp:
                     y--;
                     value = target.walkUp();
@@ -42,6 +40,7 @@ public class Main {
                     value = target.walkLeft();
                     break;
                 case WalkDown:
+                    y++;
                     value = target.walkDown();
                     break;
                 case LookUp:
@@ -81,6 +80,9 @@ public class Main {
                     value = target.putDown();
                     break;
             }
+
+            //Mapに追加.
+            ai.add2Map(action, value);
 
             turn++;
         }

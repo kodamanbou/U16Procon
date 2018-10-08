@@ -14,23 +14,25 @@ public class Agent {
 
     private static final int HIT_WALL_PENALTY = 100;           //ペナルティはあとで調整
     private static final int ENEMY_ENCOUNTER_PENALTY = 100;
-    private static final int SAME_PATH_PENALTY = 10;
+    private static final int WALK_SURVEY_REWARD = 10;
     private static final int SELF_KILL_PENALTY = 100;
+    private static final int BLINDLY_PUT_PENALTY = 30;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 10;
     private static final int ITEM_CLOSE_REWARD = 5;
-    private static final int ITEM_CHECK_REWARD = 5;
 
-    private static final int FLOOR = 0,
-                             ENEMY = 1,
-                             BLOCK = 2,
-                             ITEM = 3;
+    private static final int
+            FLOOR = 0,
+            ENEMY = 1,
+            BLOCK = 2,
+            ITEM = 3;
 
     private HashMap<Action, Float> qmap;
     private ArrayList<Action> actions;
 
-    private ArrayList<Path> paths;
-    private Path current;
+    private ArrayList<Grid> q_paths;
+    private Point current;
+    private Map map;
 
     public enum Action {
         WalkUp,
@@ -55,19 +57,20 @@ public class Agent {
         //コンストラクタ
         qmap = new HashMap<>();
         actions = new ArrayList<>();
-        paths = new ArrayList<>();
+        q_paths = new ArrayList<>();
+        map = Map.getInstance();
     }
 
-    public void init(int x, int y, int id) {
+    public void init(int x, int y) {
         actions.clear();
         for (Action a : Action.values()) {
             qmap.put(a, 0.0f);  //Q値の初期化.
         }
-        this.current = new Path(new Point(x, y), id);
-        paths.add(current);
+        this.current = new Point(x, y);
     }
 
     public void evaluate(int[] state) {
+
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
         if (state[1] == BLOCK) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY);
@@ -151,7 +154,7 @@ public class Agent {
         if (state[5] == ENEMY) qmap.put(Action.PutRight, qmap.get(Action.PutRight) + ENEMY_DEFEAT_REWARD);
         if (state[7] == ENEMY) qmap.put(Action.PutDown, qmap.get(Action.PutDown) + ENEMY_DEFEAT_REWARD);
 
-        //三方向をブロックで囲まれているときに、残りのFloorにブロックを置くと評価を下げる処理。
+        //三方向をブロックで囲まれているときに、残りのFloorにブロックを置くと評価を下げる処理.
         if (state[3] == BLOCK && state[5] == BLOCK && state[7] == BLOCK) {
             qmap.put(Action.PutUp, qmap.get(Action.PutUp) - SELF_KILL_PENALTY);
         }
@@ -180,7 +183,29 @@ public class Agent {
             qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - ENEMY_ENCOUNTER_PENALTY);
         }
 
-        //TODO やったらめったらPutしないようにする.(Mapを作成し、まだ通ってない座標にPutしたら若干のペナルティを与える)
+        /*やったらめったらPutしないようにする.(Mapを作成し、まだ通ってない座標にPutしたら若干のペナルティを与える)
+         * 同時に、未踏の領域へ進む行動を評価する.*/
+        if (!isSamePath(new Point(current.x, current.y - 1))) {
+            qmap.put(Action.PutUp, qmap.get(Action.PutUp) - BLINDLY_PUT_PENALTY);
+            qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + WALK_SURVEY_REWARD);
+        }
+        if (!isSamePath(new Point(current.x - 1, current.y))) {
+            qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - BLINDLY_PUT_PENALTY);
+            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + WALK_SURVEY_REWARD);
+        }
+        if (!isSamePath(new Point(current.x + 1, current.y))) {
+            qmap.put(Action.PutRight, qmap.get(Action.PutRight) - BLINDLY_PUT_PENALTY);
+            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + WALK_SURVEY_REWARD);
+        }
+        if (!isSamePath(new Point(current.x, current.y + 1))) {
+            qmap.put(Action.PutDown, qmap.get(Action.PutDown) - BLINDLY_PUT_PENALTY);
+            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + WALK_SURVEY_REWARD);
+        }
+
+        //Grid登録.
+        Grid grid = new Grid(current);
+        grid.setQ_table(qmap);
+        q_paths.add(grid);
     }
 
     public Action chooseAction() {
@@ -199,6 +224,57 @@ public class Agent {
         }
 
         return actions.get(rand.nextInt(actions.size()));
+    }
+
+    private boolean isSamePath(Point point) {
+        for (Grid g : q_paths) {
+            if (g.getCoord().equals(point)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void add2Map(Action action, int[] value) {
+        //Mapに登録する処理.
+        switch (action) {
+            case WalkUp:
+                map.walkTo(current, 1, value);
+                break;
+            case WalkLeft:
+                map.walkTo(current, 3, value);
+                break;
+            case WalkRight:
+                map.walkTo(current, 5, value);
+                break;
+            case WalkDown:
+                map.walkTo(current, 7, value);
+                break;
+            case LookUp:
+                map.lookTo(current, 1, value);
+                break;
+            case LookLeft:
+                map.lookTo(current, 3, value);
+                break;
+            case LookRight:
+                map.lookTo(current, 5, value);
+                break;
+            case LookDown:
+                map.lookTo(current, 7, value);
+                break;
+            case SearchUp:
+                map.searchTo(current, 1, value);
+                break;
+            case SearchLeft:
+                map.searchTo(current, 3, value);
+                break;
+            case SearchRight:
+                map.searchTo(current, 5, value);
+                break;
+            case SearchDown:
+                map.searchTo(current, 7, value);
+                break;
+        }
     }
 
 }
