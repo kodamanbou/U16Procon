@@ -63,6 +63,40 @@ public final class Map {
 
     public void lookTo(Point point, int direction, int[] value) {
         //ここでLookの結果を座標と一緒にHashMapにぶち込む.
+        switch (direction) {
+            case 1:
+                int index = 0;
+                for (int i = -3; i < 0; i++) {
+                    for (int j = -1; j < 2; j++) {
+                        Point point1 = new Point(point.x + j, point.y + i);
+                        if (!isExist(point1)) map_data.put(point1, value[index]);
+                        index++;
+                    }
+                }
+                break;
+            case 3:
+                index = 0;
+                for (int i = -1; i < 2; i++) {
+                    for (int j = -3; j < 0; j++) {
+                        Point point1 = new Point(point.x + j, point.y + i);
+                        if (!isExist(point1)) map_data.put(point1, value[index]);
+                        index++;
+                    }
+                }
+                break;
+            case 5:
+                index = 0;
+                for (int i = -1; i < 2; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        Point point1 = new Point(point.x + j, point.y + i);
+                        if (!isExist(point1)) map_data.put(point1, value[index]);
+                        index++;
+                    }
+                }
+                break;
+            case 7:
+                index = 0;
+        }
     }
 
     public void searchTo(Point point, int direction, int[] value) {
