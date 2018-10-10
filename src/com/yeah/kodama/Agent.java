@@ -275,6 +275,7 @@ public class Agent {
                 map.searchTo(current, 7, value);
                 break;
         }
-    }
 
+        map.showHistory();
+    }
 }

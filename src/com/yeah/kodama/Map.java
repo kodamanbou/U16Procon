@@ -144,4 +144,10 @@ public final class Map {
         }
         return false;
     }
+
+    public void showHistory() {
+        for (Point point : map_data.keySet()) {
+            System.out.println("(" + point.x + ", " + point.y + ")" + "   " + map_data.get(point));
+        }
+    }
 }
