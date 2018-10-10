@@ -63,31 +63,77 @@ public final class Map {
 
     public void lookTo(Point point, int direction, int[] value) {
         //ここでLookの結果を座標と一緒にHashMapにぶち込む.もう妥協します.
-        Point[] offset;
+        Point[] offset = new Point[9];
+        int x = point.x;
+        int y = point.y;
         switch (direction) {
             case 1:
                 //上にLookする.
+                offset = new Point[] {
+                        new Point(x - 1, y - 3), new Point(x, y - 3), new Point(x + 1, y - 3),
+                        new Point(x - 1, y - 2), new Point(x, y - 2), new Point(x + 1, y - 2),
+                        new Point(x - 1, y - 1), new Point(x, y - 1), new Point(x + 1, y - 1)
+                };
                 break;
             case 3:
                 //左にLookする.
                 offset = new Point[] {
-                        new Point(-3, -1), new Point(-2, -1), new Point(-1, -1),
-                        new Point(-3, 0), new Point(-2, 0), new Point(-1, 0),
-                        new Point(-3, 1), new Point(-2, 1), new Point(-1, 1)
+                        new Point(x - 3, y - 1), new Point(x - 2, y - 1), new Point(x - 1, y - 1),
+                        new Point(x - 3, y), new Point(x - 2, y), new Point(x - 1, y),
+                        new Point(x - 3, y + 1), new Point(x - 2, y + 1), new Point(x - 1, y + 1)
                 };
                 break;
             case 5:
                 //右にLookする.
                 offset = new Point[] {
+                        new Point(x + 1, y -1), new Point(x + 2, y - 1), new Point(x + 3, y - 1),
+                        new Point(x + 1, y), new Point(x + 2, y), new Point(x + 3, y),
+                        new Point(x + 1, y + 1), new Point(x + 2, y + 1), new Point(x + 3, y + 1)
                 };
                 break;
             case 7:
                 //下にLookする.
+                offset = new Point[] {
+                        new Point(x - 1, y + 1), new Point(x, y + 1), new Point(x + 1, y + 1),
+                        new Point(x - 1, y + 2), new Point(x, y + 2), new Point(x + 1, y + 2),
+                        new Point(x - 1, y + 3), new Point(x, y + 3), new Point(x + 1, y + 3)
+                };
+                break;
+        }
+
+        for (int i = 0; i < 9; i++) {
+            if (!isExist(offset[i])) map_data.put(offset[i], value[i]);
         }
     }
 
     public void searchTo(Point point, int direction, int[] value) {
         //ここでsearchの結果をMapに入れる.
+        switch (direction) {
+            case 1:
+                for (int i = 0; i < 9; i++) {
+                    Point point1 = new Point(point.x, point.y + i + 1);
+                    if (!isExist(point1)) map_data.put(point1, value[i]);
+                }
+                break;
+            case 3:
+                for (int i = 0; i < 9; i++) {
+                    Point point1 = new Point(point.x - i - 1, point.y);
+                    if (!isExist(point1)) map_data.put(point1, value[i]);
+                }
+                break;
+            case 5:
+                for (int i = 0; i < 9; i++) {
+                    Point point1 = new Point(point.x + i + 1, point.y);
+                    if (!isExist(point1)) map_data.put(point1, value[i]);
+                }
+                break;
+            case 7:
+                for (int i = 0; i < 9; i++) {
+                    Point point1 = new Point(point.x, point.y - i - 1);
+                    if (!isExist(point1)) map_data.put(point1, value[i]);
+                }
+                break;
+        }
     }
 
     private boolean isExist(Point point) {
