@@ -21,6 +21,8 @@ public class Agent {
     private static final int GET_ITEM_REWARD = 10;
     private static final int ITEM_CLOSE_REWARD = 5;
 
+    //TODO ペナルティを追加。同じ場所で何度もルックやサーチをしないようにする.
+
     private static final int
             FLOOR = 0,
             ENEMY = 1,

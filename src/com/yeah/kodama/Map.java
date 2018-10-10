@@ -136,7 +136,7 @@ public final class Map {
         }
     }
 
-    private boolean isExist(Point point) {
+    public boolean isExist(Point point) {
         //すでにMapに情報が登録されている場合は、追加しないようにする。
         //例：アイテム取った後に、元いた場所がブロックに変わるが、それは追加しない.
         for (Point path : map_data.keySet()) {
