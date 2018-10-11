@@ -17,11 +17,10 @@ public class Agent {
     private static final int WALK_SURVEY_REWARD = 10;
     private static final int SELF_KILL_PENALTY = 100;
     private static final int BLINDLY_PUT_PENALTY = 30;
+    private static final int USELESS_SURVEY_PENALTY = 30;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 10;
     private static final int ITEM_CLOSE_REWARD = 5;
-
-    //TODO ペナルティを追加。同じ場所で何度もルックやサーチをしないようにする.
 
     private static final int
             FLOOR = 0,
@@ -203,6 +202,8 @@ public class Agent {
             qmap.put(Action.PutDown, qmap.get(Action.PutDown) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + WALK_SURVEY_REWARD);
         }
+
+        //TODO やったらめったらLookやサーチをしないように、ペナルティを与える処理.
 
         //Grid登録.
         Grid grid = new Grid(current);
