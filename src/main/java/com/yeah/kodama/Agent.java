@@ -240,6 +240,8 @@ public class Agent {
         long seed = System.currentTimeMillis();
         Random rand = new Random(seed);
         float max_q = -999.0f;
+
+        //ε-greedy法.
         epsilon = 0.5 * (1.0 / (turn + 1));
 
         if (epsilon <= rand.nextFloat()) {
