@@ -21,6 +21,7 @@ public class Agent {
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 20;
     private static final int ITEM_CLOSE_REWARD = 5;
+    private static final int CHOISE_OF_STEINER = 50;
 
     private static final int
             FLOOR = 0,
@@ -55,12 +56,13 @@ public class Agent {
         PutDown
     }
 
-    public Agent() {
+    public Agent(int[] value) {
         //コンストラクタ
         qmap = new HashMap<>();
         actions = new ArrayList<>();
         q_paths = new ArrayList<>();
         map = Map.getInstance();
+        map.getReady(new Point(0, 0), value);
         turn = 0;
     }
 
@@ -86,6 +88,8 @@ public class Agent {
             if (state[0] != BLOCK || state[2] != BLOCK) {
                 qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_ITEM_REWARD);
             } else {
+                //トラップかどうか確認して、その結果に応じて報酬を調整する.
+                map.isExist(new Point(current.x, current.y - 2));
                 qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - SELF_KILL_PENALTY);
                 qmap.put(Action.PutUp, qmap.get(Action.PutUp));
             }
@@ -158,7 +162,7 @@ public class Agent {
         if (state[5] == ENEMY) qmap.put(Action.PutRight, qmap.get(Action.PutRight) + ENEMY_DEFEAT_REWARD);
         if (state[7] == ENEMY) qmap.put(Action.PutDown, qmap.get(Action.PutDown) + ENEMY_DEFEAT_REWARD);
 
-        //三方向をブロックで囲まれているときに、残りのFloorにブロックを置くと評価を下げる処理.
+        //三方向をブロックで囲まれているときに、残りのFloorにブロックを置く行動の評価を下げる処理.
         if (state[3] == BLOCK && state[5] == BLOCK && state[7] == BLOCK) {
             qmap.put(Action.PutUp, qmap.get(Action.PutUp) - SELF_KILL_PENALTY);
         }
@@ -241,22 +245,14 @@ public class Agent {
         Random rand = new Random(seed);
         float max_q = -999.0f;
 
-        //ε-greedy法.
-        epsilon = 0.5 * (1.0 / (turn + 1));
-
-        if (epsilon <= rand.nextFloat()) {
-            for (Action act : qmap.keySet()) {
-                if (qmap.get(act) > max_q) {
-                    max_q = qmap.get(act);
-                    actions.clear();
-                    actions.add(act);
-                } else if (qmap.get(act) == max_q) {
-                    actions.add(act);
-                }
+        for (Action act : qmap.keySet()) {
+            if (qmap.get(act) > max_q) {
+                max_q = qmap.get(act);
+                actions.clear();
+                actions.add(act);
+            } else if (qmap.get(act) == max_q) {
+                actions.add(act);
             }
-        } else {
-            actions.clear();
-            actions.add(Action.values()[rand.nextInt(16)]);
         }
 
         turn++;

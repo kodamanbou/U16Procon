@@ -70,7 +70,7 @@ public final class Map {
         }
     }
 
-    public Point[] getOffsetFromAction(Point point, Agent.Action action) {
+    private Point[] getOffsetFromAction(Point point, Agent.Action action) {
         Point[] offset = new Point[9];
         int x = point.x;
         int y = point.y;
@@ -132,7 +132,7 @@ public final class Map {
         return offset;
     }
 
-    private boolean isExist(Point point) {
+    public boolean isExist(Point point) {
         //すでにMapに情報が登録されている場合は、追加しないようにする。
         //例：アイテム取った後に、元いた場所がブロックに変わるが、それは追加しない.
         for (Point path : map_data.keySet()) {
@@ -148,7 +148,7 @@ public final class Map {
         int count = 0;
         for (Point p : offset) {
             if (isExist(p)) count++;
-            if (count > 7) return true;
+            if (count > 6) return true;
         }
         return false;
     }
