@@ -19,9 +19,11 @@ public class Agent {
     private static final int BLINDLY_PUT_PENALTY = 30;
     private static final int USELESS_SURVEY_PENALTY = 30;
     private static final int ENEMY_DEFEAT_REWARD = 100;
-    private static final int GET_ITEM_REWARD = 20;
+    private static final int GET_ITEM_REWARD = 30;
     private static final int ITEM_CLOSE_REWARD = 5;
-    private static final int CHOISE_OF_STEINER = 50;
+    private static final int PUT_TRAP_REWARD = 20;
+    private static final int CHECK_TRAP_REWARD = 20;
+    private static final int CHOISE_OF_STEINER = 50;            //A-star用の報酬.
 
     private static final int
             FLOOR = 0,
@@ -89,9 +91,18 @@ public class Agent {
                 qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_ITEM_REWARD);
             } else {
                 //トラップかどうか確認して、その結果に応じて報酬を調整する.
-                map.isExist(new Point(current.x, current.y - 2));
-                qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - SELF_KILL_PENALTY);
-                qmap.put(Action.PutUp, qmap.get(Action.PutUp));
+                int top = map.get(new Point(current.x, current.y - 2));
+                if (top != -1) {
+                    if (top == 2) {
+                        //Trap!!
+                        qmap.put(Action.PutUp, qmap.get(Action.PutUp) + PUT_TRAP_REWARD);
+                        qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - SELF_KILL_PENALTY);
+                    } else {
+                        qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + GET_ITEM_REWARD);
+                    }
+                } else {
+                    qmap.put(Action.LookUp, qmap.get(Action.LookUp) + CHECK_TRAP_REWARD);
+                }
             }
         }
 
@@ -99,7 +110,19 @@ public class Agent {
             if (state[0] != BLOCK || state[6] != BLOCK) {
                 qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_ITEM_REWARD);
             } else {
-                qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - SELF_KILL_PENALTY);
+                //トラップかどうか確認して、その結果に応じて報酬を調整する.
+                int left = map.get(new Point(current.x, current.y - 2));
+                if (left != -1) {
+                    if (left == 2) {
+                        //Trap!!
+                        qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) + PUT_TRAP_REWARD);
+                        qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - SELF_KILL_PENALTY);
+                    } else {
+                        qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_ITEM_REWARD);
+                    }
+                } else {
+                    qmap.put(Action.LookUp, qmap.get(Action.LookLeft) + CHECK_TRAP_REWARD);
+                }
             }
         }
 
@@ -107,7 +130,19 @@ public class Agent {
             if (state[2] != BLOCK || state[8] != BLOCK) {
                 qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_ITEM_REWARD);
             } else {
-                qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + SELF_KILL_PENALTY);
+                //トラップかどうか確認して、その結果に応じて報酬を調整する.
+                int right = map.get(new Point(current.x, current.y - 2));
+                if (right != -1) {
+                    if (right == 2) {
+                        //Trap!!
+                        qmap.put(Action.PutRight, qmap.get(Action.PutRight) + PUT_TRAP_REWARD);
+                        qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - SELF_KILL_PENALTY);
+                    } else {
+                        qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_ITEM_REWARD);
+                    }
+                } else {
+                    qmap.put(Action.LookRight, qmap.get(Action.LookRight) + CHECK_TRAP_REWARD);
+                }
             }
         }
 
@@ -115,7 +150,19 @@ public class Agent {
             if (state[6] != BLOCK || state[8] != BLOCK) {
                 qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_ITEM_REWARD);
             } else {
-                qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - SELF_KILL_PENALTY);
+                //トラップかどうか確認して、その結果に応じて報酬を調整する.
+                int bottom = map.get(new Point(current.x, current.y - 2));
+                if (bottom != -1) {
+                    if (bottom == 2) {
+                        //Trap!!
+                        qmap.put(Action.PutDown, qmap.get(Action.PutDown) + PUT_TRAP_REWARD);
+                        qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - SELF_KILL_PENALTY);
+                    } else {
+                        qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_ITEM_REWARD);
+                    }
+                } else {
+                    qmap.put(Action.LookDown, qmap.get(Action.LookDown) + CHECK_TRAP_REWARD);
+                }
             }
         }
 
@@ -295,7 +342,5 @@ public class Agent {
                 map.inquiry(current, action, value);
                 break;
         }
-
-        map.showHistory();
     }
 }

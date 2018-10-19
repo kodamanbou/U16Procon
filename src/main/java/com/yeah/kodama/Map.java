@@ -132,13 +132,20 @@ public final class Map {
         return offset;
     }
 
-    public boolean isExist(Point point) {
+    private boolean isExist(Point point) {
         //すでにMapに情報が登録されている場合は、追加しないようにする。
         //例：アイテム取った後に、元いた場所がブロックに変わるが、それは追加しない.
         for (Point path : map_data.keySet()) {
             if (path.equals(point)) return true;
         }
         return false;
+    }
+
+    public int get(Point point) {
+        for (Point p : map_data.keySet()) {
+            if (p.equals(point)) return map_data.get(p);
+        }
+        return -1;
     }
 
     public boolean isUselessSurvey(Point point, Agent.Action action) {

@@ -78,7 +78,7 @@ public class Client {
             System.out.println(line);
             String[] data = line.split("");
 
-            if (data[0].equals("0")) System.exit(0);
+            if (data[0].equals("0")) exit();
 
             for (int i = 0; i < 9; i++) {
                 value[i] = Integer.parseInt(data[i + 1]);
@@ -88,6 +88,11 @@ public class Client {
             close();
         }
         return value;
+    }
+
+    private void exit() {
+        Map.getInstance().showHistory();
+        System.exit(0);
     }
 
     public int[] walkUp() {
