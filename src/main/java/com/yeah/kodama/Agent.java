@@ -344,3 +344,19 @@ public class Agent {
         }
     }
 }
+
+class Node {
+    private Point point;
+    private int cost;
+    private int hcost;
+    private int score;
+    private Node parent = null;
+
+    public enum Status {
+        None,
+        Open,
+        Closed
+    }
+
+    private Status status = Status.None;
+}

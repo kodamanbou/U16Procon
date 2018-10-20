@@ -92,6 +92,7 @@ public class Client {
 
     private void exit() {
         Map.getInstance().showHistory();
+        Map.getInstance().save();
         System.exit(0);
     }
 

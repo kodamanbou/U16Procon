@@ -1,6 +1,7 @@
 package com.yeah.kodama;
 
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,6 +12,8 @@ public final class Map {
 
     private Map() {
         map_data = new HashMap<>();
+        File csv = new File("map.csv");
+        if (csv.exists()) load(csv);
     }
 
     public static Map getInstance() {
@@ -166,7 +169,33 @@ public final class Map {
         }
     }
 
-    private void fill() {
-        //Mapの反対側を埋める作業.
+    public void save() {
+        try {
+            File csv = new File("map.csv");
+            BufferedWriter bw = new BufferedWriter(new FileWriter(csv));
+            for (Point point : map_data.keySet()) {
+                bw.write(point.x + "," + point.y + "," + map_data.get(point));
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void load(File file) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line = null;
+            String[] data = null;
+            while ((line = br.readLine()) != null) {
+                data = line.split(",");
+                map_data.put(new Point(Integer.parseInt(data[0]), Integer.parseInt(data[1])), Integer.parseInt(data[2]));
+            }
+            System.out.println("Map Loaded.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
