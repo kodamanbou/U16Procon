@@ -314,9 +314,12 @@ public class Agent {
                 } else if (moveTo.y - current.y == -1) {
                     //上移動.
                     qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOISE_OF_STEINER);
+                } else {
+                    //なんやかんやでルートから外れた時の処理.
+                    path_to_item.clear();
                 }
 
-                path_to_item.remove(0);
+                if (path_to_item.size() > 0) path_to_item.remove(0);
             }
         }
 
