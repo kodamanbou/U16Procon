@@ -1,7 +1,10 @@
 package com.yeah.kodama;
 
+import org.nd4j.linalg.api.ops.Op;
+
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -58,6 +61,11 @@ public class Agent {
         PutDown
     }
 
+    //For A*.
+    private ArrayList<Node> openList;
+    private ArrayList<Point> items;
+    private ArrayList<Point> path_to_item;
+
     public Agent(int[] value) {
         //コンストラクタ
         qmap = new HashMap<>();
@@ -66,6 +74,8 @@ public class Agent {
         map = Map.getInstance();
         map.getReady(new Point(0, 0), value);
         turn = 0;
+        items = map.getItemList();
+        path_to_item = new ArrayList<>();
     }
 
     public void init(int x, int y) {
@@ -77,6 +87,9 @@ public class Agent {
     }
 
     public void evaluate(int[] state) {
+
+        //デバッグ表示(現在地)
+        System.out.println("現在地の座標 : " + current.toString());
 
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
@@ -111,7 +124,7 @@ public class Agent {
                 qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_ITEM_REWARD);
             } else {
                 //トラップかどうか確認して、その結果に応じて報酬を調整する.
-                int left = map.get(new Point(current.x, current.y - 2));
+                int left = map.get(new Point(current.x - 2, current.y));
                 if (left != -1) {
                     if (left == 2) {
                         //Trap!!
@@ -131,7 +144,7 @@ public class Agent {
                 qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + GET_ITEM_REWARD);
             } else {
                 //トラップかどうか確認して、その結果に応じて報酬を調整する.
-                int right = map.get(new Point(current.x, current.y - 2));
+                int right = map.get(new Point(current.x + 2, current.y));
                 if (right != -1) {
                     if (right == 2) {
                         //Trap!!
@@ -151,7 +164,7 @@ public class Agent {
                 qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + GET_ITEM_REWARD);
             } else {
                 //トラップかどうか確認して、その結果に応じて報酬を調整する.
-                int bottom = map.get(new Point(current.x, current.y - 2));
+                int bottom = map.get(new Point(current.x, current.y + 2));
                 if (bottom != -1) {
                     if (bottom == 2) {
                         //Trap!!
@@ -281,6 +294,32 @@ public class Agent {
         qmap.put(Action.PutRight, qmap.get(Action.PutRight) - 10);
         qmap.put(Action.PutDown, qmap.get(Action.PutDown) - 10);
 
+        //Astar探索の結果を評価に反映する.
+        if (map.getRound() == 2) {
+            if (path_to_item.size() == 0) {
+                calcAstar();
+            }
+
+            if (path_to_item.size() > 0) {
+                Point moveTo = path_to_item.get(0);
+                if (moveTo.x - current.x == 1) {
+                    //右移動.
+                    qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + CHOISE_OF_STEINER);
+                } else if (moveTo.x - current.x == -1) {
+                    //左移動.
+                    qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + CHOISE_OF_STEINER);
+                } else if (moveTo.y - current.y == 1) {
+                    //下移動.
+                    qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + CHOISE_OF_STEINER);
+                } else if (moveTo.y - current.y == -1) {
+                    //上移動.
+                    qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOISE_OF_STEINER);
+                }
+
+                path_to_item.remove(0);
+            }
+        }
+
         //Grid登録.
         Grid grid = new Grid(current);
         grid.setQ_table(qmap);
@@ -343,6 +382,105 @@ public class Agent {
                 break;
         }
     }
+
+    //ここからA-starセクション.
+    private void calcAstar() {
+        path_to_item.clear();
+        Point target = getTarget();
+        Node start = new Node(current, null);
+        start.setCost(0);
+        start.setHcost(Math.abs(target.x - current.x) + Math.abs(target.y - current.y));
+        start.setScore(start.getCost() + start.getHcost());
+        openList = new ArrayList<>();
+        openList.add(start);
+        openNode(searchMinNode(), target);
+    }
+
+    //上下左右のノードをオープンする.
+    private void openNode(Node parent, Point target) {
+
+        if (parent.getPoint().equals(target)) {
+            getPath(parent);
+            Collections.reverse(path_to_item);
+
+            System.out.print("Path :");
+            for (Point point : path_to_item) {
+                System.out.print(point.toString() + " -> ");
+            }
+            System.out.println("Goal");
+            path_to_item.remove(0);
+            return;
+        }
+
+        int parentX = parent.getPoint().x;
+        int parentY = parent.getPoint().y;
+
+        for (int i = -1; i < 1; i++) {
+            Point[] points = new Point[2];
+
+            if (i == -1) {
+                points[i + 1] = new Point(parentX + i, parentY);
+                points[i + 2] = new Point(parentX, parentY + i);
+            } else {
+                points[i] = new Point(parentX, parentY + 1);
+                points[i + 1] = new Point(parentX + 1, parentY);
+            }
+
+            for (Point point : points) {
+                Node node = new Node(point, parent);
+                if (map.get(point) != 2) {
+                    node.setCost(parent.getCost() + 1);
+                    node.setHcost(Math.abs(target.x - point.x) + Math.abs(target.y - point.y));
+                    node.setScore(node.getCost() + node.getHcost());
+                    openList.add(node);
+                }
+            }
+        }
+
+        openNode(searchMinNode(), target);
+    }
+
+    private Point getTarget() {
+        int minCost = 9999;
+        Point nearestItem = null;
+        for (Point point : items) {
+            int hcost = Math.abs(point.x - current.x) + Math.abs(point.y - current.y);
+            if (hcost < minCost) {
+                minCost = hcost;
+                nearestItem = point;
+            }
+        }
+
+        items.remove(nearestItem);
+        System.out.println("Target Point : " + nearestItem.toString());
+        System.out.println("Value : " + String.valueOf(map.get(nearestItem)));
+        return nearestItem;
+    }
+
+    private Node searchMinNode() {
+        int min = 9999;
+        int minCost = 9999;
+        Node minNode = null;
+
+        for (Node node : openList) {
+            int score = node.getScore();
+            if (score > min) continue;
+            if (score == min && node.getCost() >= minCost) continue;
+
+            min = score;
+            minCost = node.getCost();
+            minNode = node;
+        }
+        openList.clear();
+
+        return minNode;
+    }
+
+    private void getPath(Node parent) {
+        //再帰的に呼び出して、親をたどる.
+        path_to_item.add(parent.getPoint());
+        if (parent.getParent() != null) getPath(parent.getParent());
+    }
 }
 
 class Node {
@@ -352,11 +490,41 @@ class Node {
     private int score;
     private Node parent = null;
 
-    public enum Status {
-        None,
-        Open,
-        Closed
+    public int getCost() {
+        return cost;
     }
 
-    private Status status = Status.None;
+    public int getHcost() {
+        return hcost;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public void setHcost(int hcost) {
+        this.hcost = hcost;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public Node(Point point, Node parent) {
+        this.point = point;
+        this.parent = parent;
+    }
+
 }

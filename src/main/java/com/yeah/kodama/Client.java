@@ -76,6 +76,7 @@ public class Client {
         try {
             String line = reader.readLine();
             System.out.println(line);
+            if (line == null) exit();
             String[] data = line.split("");
 
             if (data[0].equals("0")) exit();

@@ -8,16 +8,24 @@ import java.util.HashMap;
 public final class Map {
 
     private HashMap<Point, Integer> map_data;
+    private int round = 1;
     private static Map theInstance = new Map();
 
     private Map() {
         map_data = new HashMap<>();
         File csv = new File("map.csv");
-        if (csv.exists()) load(csv);
+        if (csv.exists()) {
+            load(csv);
+            this.round = 2;
+        }
     }
 
     public static Map getInstance() {
         return theInstance;
+    }
+
+    public int getRound() {
+        return round;
     }
 
     public void getReady(Point point, int[] value) {
@@ -81,7 +89,7 @@ public final class Map {
         switch (action) {
             case LookUp:
                 //上にLookする.
-                offset = new Point[] {
+                offset = new Point[]{
                         new Point(x - 1, y - 3), new Point(x, y - 3), new Point(x + 1, y - 3),
                         new Point(x - 1, y - 2), new Point(x, y - 2), new Point(x + 1, y - 2),
                         new Point(x - 1, y - 1), new Point(x, y - 1), new Point(x + 1, y - 1)
@@ -89,7 +97,7 @@ public final class Map {
                 break;
             case LookLeft:
                 //左にLookする.
-                offset = new Point[] {
+                offset = new Point[]{
                         new Point(x - 3, y - 1), new Point(x - 2, y - 1), new Point(x - 1, y - 1),
                         new Point(x - 3, y), new Point(x - 2, y), new Point(x - 1, y),
                         new Point(x - 3, y + 1), new Point(x - 2, y + 1), new Point(x - 1, y + 1)
@@ -97,15 +105,15 @@ public final class Map {
                 break;
             case LookRight:
                 //右にLookする.
-                offset = new Point[] {
-                        new Point(x + 1, y -1), new Point(x + 2, y - 1), new Point(x + 3, y - 1),
+                offset = new Point[]{
+                        new Point(x + 1, y - 1), new Point(x + 2, y - 1), new Point(x + 3, y - 1),
                         new Point(x + 1, y), new Point(x + 2, y), new Point(x + 3, y),
                         new Point(x + 1, y + 1), new Point(x + 2, y + 1), new Point(x + 3, y + 1)
                 };
                 break;
             case LookDown:
                 //下にLookする.
-                offset = new Point[] {
+                offset = new Point[]{
                         new Point(x - 1, y + 1), new Point(x, y + 1), new Point(x + 1, y + 1),
                         new Point(x - 1, y + 2), new Point(x, y + 2), new Point(x + 1, y + 2),
                         new Point(x - 1, y + 3), new Point(x, y + 3), new Point(x + 1, y + 3)
@@ -151,6 +159,14 @@ public final class Map {
         return -1;
     }
 
+    private void put(Point point, int value) {
+        if (round == 2) {
+            for (Point p : map_data.keySet()) {
+                if (p.equals(point)) map_data.put(p, value);
+            }
+        }
+    }
+
     public boolean isUselessSurvey(Point point, Agent.Action action) {
         //ここで無駄なLookやSearchを使っていないかチェックする
         //8割型すでに格子の状態を観測済みなら、trueを返す.
@@ -163,18 +179,28 @@ public final class Map {
         return false;
     }
 
+    public ArrayList<Point> getItemList() {
+        ArrayList<Point> items = new ArrayList<>();
+        for (Point point : map_data.keySet()) {
+            if (map_data.get(point) == 3) items.add(point);
+        }
+
+        return items;
+    }
+
     public void showHistory() {
         for (Point point : map_data.keySet()) {
             System.out.println("(" + point.x + ", " + point.y + ")" + "   " + map_data.get(point));
         }
     }
 
+    //Mapのsave.座標は反転済み.
     public void save() {
         try {
             File csv = new File("map.csv");
             BufferedWriter bw = new BufferedWriter(new FileWriter(csv));
             for (Point point : map_data.keySet()) {
-                bw.write(point.x + "," + point.y + "," + map_data.get(point));
+                bw.write(String.valueOf(point.x * -1) + "," + String.valueOf(point.y * -1) + "," + map_data.get(point));
                 bw.newLine();
             }
             bw.flush();
@@ -187,8 +213,8 @@ public final class Map {
     public void load(File file) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
-            String line = null;
-            String[] data = null;
+            String line;
+            String[] data;
             while ((line = br.readLine()) != null) {
                 data = line.split(",");
                 map_data.put(new Point(Integer.parseInt(data[0]), Integer.parseInt(data[1])), Integer.parseInt(data[2]));
