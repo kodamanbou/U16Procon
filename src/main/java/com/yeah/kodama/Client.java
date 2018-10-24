@@ -93,7 +93,7 @@ public class Client {
 
     private void exit() {
         Map.getInstance().showHistory();
-        Map.getInstance().save();
+        if (Map.getInstance().getRound() != 2) Map.getInstance().save();
         System.exit(0);
     }
 
