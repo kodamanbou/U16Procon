@@ -29,7 +29,6 @@ public class Client {
     private boolean checkIfStart() {
         try {
             String atmark = reader.readLine();
-            System.out.println(atmark);
             if (atmark.equals("@")) {
                 return true;
             }
@@ -75,7 +74,6 @@ public class Client {
         int[] value = new int[9];
         try {
             String line = reader.readLine();
-            System.out.println(line);
             if (line == null) exit();
             String[] data = line.split("");
 
