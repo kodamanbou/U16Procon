@@ -1,7 +1,5 @@
 package com.yeah.kodama;
 
-import org.nd4j.linalg.api.ops.Op;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,8 +23,8 @@ public class Agent {
     private static final int GET_ITEM_REWARD = 30;
     private static final int ITEM_CLOSE_REWARD = 5;
     private static final int PUT_TRAP_REWARD = 20;
-    private static final int CHECK_TRAP_REWARD = 20;
-    private static final int CHOISE_OF_STEINER = 50;            //A-star用の報酬.
+    private static final int CHECK_TRAP_REWARD = 50;
+    private static final int CHOICE_OF_STEINER = 50;            //A-star用の報酬.
 
     private static final int
             FLOOR = 0,
@@ -65,6 +63,7 @@ public class Agent {
     private ArrayList<Node> openList;
     private ArrayList<Point> items;
     private ArrayList<Point> path_to_item;
+    private int recursive;
 
     public Agent(int[] value) {
         //コンストラクタ
@@ -90,6 +89,7 @@ public class Agent {
 
         //デバッグ表示(現在地)
         System.out.println("現在地の座標 : " + current.toString());
+        if (map.getRound() == 2) System.out.println("items : " + items.size());
 
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
@@ -289,10 +289,10 @@ public class Agent {
             qmap.put(Action.SearchDown, qmap.get(Action.SearchDown) - USELESS_SURVEY_PENALTY);
 
         //This is a test.(putそのものに対するペナルティーを与えてみる)
-        //qmap.put(Action.PutUp, qmap.get(Action.PutUp) - 10);
-        //qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - 10);
-        //qmap.put(Action.PutRight, qmap.get(Action.PutRight) - 10);
-        //qmap.put(Action.PutDown, qmap.get(Action.PutDown) - 10);
+        qmap.put(Action.PutUp, qmap.get(Action.PutUp) - 10);
+        qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - 10);
+        qmap.put(Action.PutRight, qmap.get(Action.PutRight) - 10);
+        qmap.put(Action.PutDown, qmap.get(Action.PutDown) - 10);
 
         //Astar探索の結果を評価に反映する.
         if (map.getRound() == 2) {
@@ -302,19 +302,20 @@ public class Agent {
                 Point moveTo = path_to_item.get(0);
                 if (moveTo.x - current.x == 1) {
                     //右移動.
-                    qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + CHOISE_OF_STEINER);
+                    qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + CHOICE_OF_STEINER);
                 } else if (moveTo.x - current.x == -1) {
                     //左移動.
-                    qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + CHOISE_OF_STEINER);
+                    qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + CHOICE_OF_STEINER);
                 } else if (moveTo.y - current.y == 1) {
                     //下移動.
-                    qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + CHOISE_OF_STEINER);
+                    qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + CHOICE_OF_STEINER);
                 } else if (moveTo.y - current.y == -1) {
                     //上移動.
-                    qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOISE_OF_STEINER);
+                    qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOICE_OF_STEINER);
                 } else {
                     //なんやかんやでルートから外れた時の処理.
                     path_to_item.clear();
+                    System.out.println("Path Cleared !!");
                 }
 
                 if (path_to_item.size() > 0) path_to_item.remove(0);
@@ -387,15 +388,18 @@ public class Agent {
 
     //ここからA-starセクション.
     private void calcAstar() {
+        recursive = 0;
         path_to_item.clear();
         Point target = getTarget();
-        Node start = new Node(current, null);
-        start.setCost(0);
-        start.setHcost(Math.abs(target.x - current.x) + Math.abs(target.y - current.y));
-        start.setScore(start.getCost() + start.getHcost());
-        openList = new ArrayList<>();
-        openList.add(start);
-        openNode(searchMinNode(), target);
+        if (target != null) {
+            Node start = new Node(current, null);
+            start.setCost(0);
+            start.setHcost(Math.abs(target.x - current.x) + Math.abs(target.y - current.y));
+            start.setScore(start.getCost() + start.getHcost());
+            openList = new ArrayList<>();
+            openList.add(start);
+            openNode(searchMinNode(), target);
+        }
     }
 
     //上下左右のノードをオープンする.
@@ -411,6 +415,9 @@ public class Agent {
             }
             System.out.println("Goal");
             path_to_item.remove(0);
+            return;
+        } else if (recursive == 15) {
+            //再帰処理の呼び出し回数をカウントしてStackOverflowを防ぐ！！
             return;
         }
 
@@ -439,6 +446,7 @@ public class Agent {
             }
         }
 
+        recursive++;
         openNode(searchMinNode(), target);
     }
 
@@ -454,8 +462,13 @@ public class Agent {
         }
 
         items.remove(nearestItem);
-        System.out.println("Target Point : " + nearestItem.toString());
-        System.out.println("Value : " + String.valueOf(map.get(nearestItem)));
+        if (nearestItem != null) {
+            System.out.println("Target Point : " + nearestItem.toString());
+            System.out.println("Value : " + String.valueOf(map.get(nearestItem)));
+        } else {
+            System.out.println("Target is null !!");
+        }
+
         return nearestItem;
     }
 
@@ -474,6 +487,7 @@ public class Agent {
             minNode = node;
         }
         openList.clear();
+        if (minNode != null) System.out.println("MinNode : " + minNode.getPoint().toString());
 
         return minNode;
     }
@@ -529,4 +543,8 @@ class Node {
         this.parent = parent;
     }
 
+}
+
+class Astar {
+    //A-star専用の関数を作成.最短経路を探索して、エージェントの移動先候補をする.
 }
