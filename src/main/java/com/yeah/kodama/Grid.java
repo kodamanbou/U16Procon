@@ -28,4 +28,12 @@ public class Grid {
             this.q_table.put(action, q_map.get(action));
         }
     }
+
+    public void addFootPrint() {
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
 }

@@ -19,7 +19,6 @@ public class Agent {
     private static final int SELF_KILL_PENALTY = 100;
     private static final int BLINDLY_PUT_PENALTY = 30;
     private static final int USELESS_SURVEY_PENALTY = 30;
-    private static final int DUPLICATE_PATH_PENALTY = 1;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 30;
     private static final int ITEM_CLOSE_REWARD = 5;
