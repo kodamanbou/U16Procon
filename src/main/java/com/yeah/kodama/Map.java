@@ -50,11 +50,21 @@ public final class Map {
                     Point point1 = new Point(point.x + i, point.y - 2);
                     if (!isExist(point1)) map_data.put(point1, value[i + 1]);
                 }
+
+                if (round == 2) {
+                    Point p = new Point(point.x, point.y - 1);
+                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
+                }
                 break;
             case 3:
                 for (int i = -1; i < 2; i++) {
                     Point point1 = new Point(point.x - 2, point.y + i);
                     if (!isExist(point1)) map_data.put(point1, value[(i + 1) * 3]);
+                }
+
+                if (round == 2) {
+                    Point p = new Point(point.x - 1, point.y);
+                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
                 }
                 break;
             case 5:
@@ -62,11 +72,21 @@ public final class Map {
                     Point point1 = new Point(point.x + 2, point.y + i);
                     if (!isExist(point1)) map_data.put(point1, value[i * 3 + 5]);
                 }
+
+                if (round == 2) {
+                    Point p = new Point(point.x + 1, point.y);
+                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
+                }
                 break;
             case 7:
                 for (int i = -1; i < 2; i++) {
-                    Point point1 = new Point(point.x + i, point.y + 1);
+                    Point point1 = new Point(point.x + i, point.y + 2);
                     if (!isExist(point1)) map_data.put(point1, value[i + 7]);
+                }
+
+                if (round == 2) {
+                    Point p = new Point(point.x, point.y + 1);
+                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
                 }
                 break;
         }
