@@ -7,6 +7,7 @@ public class Grid {
 
     private Point coord;
     private HashMap<Agent.Action, Float> q_table;
+    private int count;
 
     public Grid(Point coord) {
         this.coord = coord;

@@ -19,6 +19,7 @@ public class Agent {
     private static final int SELF_KILL_PENALTY = 100;
     private static final int BLINDLY_PUT_PENALTY = 30;
     private static final int USELESS_SURVEY_PENALTY = 30;
+    private static final int DUPLICATE_PATH_PENALTY = 1;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 30;
     private static final int ITEM_CLOSE_REWARD = 5;
@@ -416,33 +417,28 @@ public class Agent {
             System.out.println("Goal");
             path_to_item.remove(0);
             return;
-        } else if (recursive == 15) {
+        } else if (recursive == 20) {
             //再帰処理の呼び出し回数をカウントしてStackOverflowを防ぐ！！
             return;
         }
 
+        System.out.println(recursive);
+
         int parentX = parent.getPoint().x;
         int parentY = parent.getPoint().y;
 
-        for (int i = -1; i < 1; i++) {
-            Point[] points = new Point[2];
+        Point[] points = new Point[] {
+                new Point(parentX + 1, parentY), new Point(parentX - 1, parentY),
+                new Point(parentX, parentY - 1), new Point(parentX, parentY + 1)
+        };
 
-            if (i == -1) {
-                points[i + 1] = new Point(parentX + i, parentY);
-                points[i + 2] = new Point(parentX, parentY + i);
-            } else {
-                points[i] = new Point(parentX, parentY + 1);
-                points[i + 1] = new Point(parentX + 1, parentY);
-            }
-
-            for (Point point : points) {
-                Node node = new Node(point, parent);
-                if (map.get(point) != 2 && map.get(point) > -1) {
-                    node.setCost(parent.getCost() + 1);
-                    node.setHcost(Math.abs(target.x - point.x) + Math.abs(target.y - point.y));
-                    node.setScore(node.getCost() + node.getHcost());
-                    openList.add(node);
-                }
+        for (Point point : points) {
+            Node node = new Node(point, parent);
+            if (map.get(point) != 2 && map.get(point) > -1) {
+                node.setCost(parent.getCost() + 1);
+                node.setHcost(Math.abs(target.x - point.x) + Math.abs(target.y - point.y));
+                node.setScore(node.getCost() + node.getHcost());
+                openList.add(node);
             }
         }
 
@@ -504,7 +500,7 @@ class Node {
     private int cost;
     private int hcost;
     private int score;
-    private Node parent = null;
+    private Node parent;
 
     public int getCost() {
         return cost;
