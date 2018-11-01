@@ -12,6 +12,7 @@ public class Grid {
     public Grid(Point coord) {
         this.coord = coord;
         this.q_table = new HashMap<>();
+        this.count = 0;
     }
 
     public Point getCoord() {

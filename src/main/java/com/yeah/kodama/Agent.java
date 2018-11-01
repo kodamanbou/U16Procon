@@ -91,6 +91,9 @@ public class Agent {
         System.out.println("現在地の座標 : " + current.toString());
         if (map.getRound() == 2) System.out.println("items : " + items.size());
 
+        //Grid生成.
+        Grid grid = isSamePath(current) ? getGrid(current) : new Grid(current);
+
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
         if (state[1] == BLOCK) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY);
@@ -256,18 +259,35 @@ public class Agent {
         if (!isSamePath(new Point(current.x, current.y - 1))) {
             qmap.put(Action.PutUp, qmap.get(Action.PutUp) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + WALK_SURVEY_REWARD);
+        } else {
+            Grid up = getGrid(new Point(current.x, current.y - 1));
+            up.addFootPrint();
+            qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - up.getCount());
+            q_paths.add(up);
         }
+
         if (!isSamePath(new Point(current.x - 1, current.y))) {
             qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + WALK_SURVEY_REWARD);
+        } else {
+            grid.addFootPrint();
+            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - grid.getCount());
         }
+
         if (!isSamePath(new Point(current.x + 1, current.y))) {
             qmap.put(Action.PutRight, qmap.get(Action.PutRight) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + WALK_SURVEY_REWARD);
+        } else {
+            grid.addFootPrint();
+            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - grid.getCount());
         }
+
         if (!isSamePath(new Point(current.x, current.y + 1))) {
             qmap.put(Action.PutDown, qmap.get(Action.PutDown) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + WALK_SURVEY_REWARD);
+        } else {
+            grid.addFootPrint();
+            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - grid.getCount());
         }
 
         //やったらめったらLookやサーチをしないように、ペナルティを与える処理.
@@ -288,7 +308,7 @@ public class Agent {
         if (map.isUselessSurvey(current, Action.SearchDown))
             qmap.put(Action.SearchDown, qmap.get(Action.SearchDown) - USELESS_SURVEY_PENALTY);
 
-        //This is a test.(putそのものに対するペナルティーを与えてみる)
+        //putそのものに対するペナルティーを与える.
         qmap.put(Action.PutUp, qmap.get(Action.PutUp) - 10);
         qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - 10);
         qmap.put(Action.PutRight, qmap.get(Action.PutRight) - 10);
@@ -313,7 +333,7 @@ public class Agent {
                     //上移動.
                     qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOICE_OF_STEINER);
                 } else {
-                    //なんやかんやでルートから外れた時の処理.
+                    //ルートから外れた時の処理.
                     path_to_item.clear();
                     System.out.println("Path Cleared !!");
                 }
@@ -324,7 +344,6 @@ public class Agent {
         }
 
         //Grid登録.
-        Grid grid = new Grid(current);
         grid.setQ_table(qmap);
         q_paths.add(grid);
     }
@@ -356,6 +375,13 @@ public class Agent {
             }
         }
         return false;
+    }
+
+    private Grid getGrid(Point point) {
+        for (Grid g : q_paths) {
+            if (g.getCoord().equals(point)) return g;
+        }
+        return new Grid(point);
     }
 
     public void add2Map(Action action, int[] value) {
@@ -426,7 +452,7 @@ public class Agent {
         int parentX = parent.getPoint().x;
         int parentY = parent.getPoint().y;
 
-        Point[] points = new Point[] {
+        Point[] points = new Point[]{
                 new Point(parentX + 1, parentY), new Point(parentX - 1, parentY),
                 new Point(parentX, parentY - 1), new Point(parentX, parentY + 1)
         };
