@@ -91,9 +91,6 @@ public class Agent {
         System.out.println("現在地の座標 : " + current.toString());
         if (map.getRound() == 2) System.out.println("items : " + items.size());
 
-        //Grid生成.
-        Grid grid = getGrid(current);
-
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
         if (state[1] == BLOCK) qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - HIT_WALL_PENALTY);
@@ -255,41 +252,22 @@ public class Agent {
         }
 
         /*やったらめったらPutしないようにする.(Mapを作成し、まだ通ってない座標にPutしたら若干のペナルティを与える)
-         * 同時に、未踏の領域へ進む行動を評価し、同じ場所は、行けば行くほど評価が下がる.*/
+         * 同時に、未踏の領域へ進む行動を評価する.*/
         if (!isSamePath(new Point(current.x, current.y - 1))) {
             qmap.put(Action.PutUp, qmap.get(Action.PutUp) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + WALK_SURVEY_REWARD);
-        } else {
-            Grid up = getGrid(new Point(current.x, current.y - 1));
-            up.addFootPrint();
-            qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - up.getCount());
         }
-
         if (!isSamePath(new Point(current.x - 1, current.y))) {
             qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + WALK_SURVEY_REWARD);
-        } else {
-            Grid left = getGrid(new Point(current.x - 1, current.y));
-            left.addFootPrint();
-            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - left.getCount());
         }
-
         if (!isSamePath(new Point(current.x + 1, current.y))) {
             qmap.put(Action.PutRight, qmap.get(Action.PutRight) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + WALK_SURVEY_REWARD);
-        } else {
-            Grid right = getGrid(new Point(current.x + 1, current.y));
-            right.addFootPrint();
-            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - right.getCount());
         }
-
         if (!isSamePath(new Point(current.x, current.y + 1))) {
             qmap.put(Action.PutDown, qmap.get(Action.PutDown) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + WALK_SURVEY_REWARD);
-        } else {
-            Grid down = getGrid(new Point(current.x, current.y + 1));
-            down.addFootPrint();
-            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - down.getCount());
         }
 
         //やったらめったらLookやサーチをしないように、ペナルティを与える処理.
@@ -310,7 +288,7 @@ public class Agent {
         if (map.isUselessSurvey(current, Action.SearchDown))
             qmap.put(Action.SearchDown, qmap.get(Action.SearchDown) - USELESS_SURVEY_PENALTY);
 
-        //putそのものに対するペナルティーを与える.
+        //This is a test.(putそのものに対するペナルティーを与えてみる)
         qmap.put(Action.PutUp, qmap.get(Action.PutUp) - 10);
         qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - 10);
         qmap.put(Action.PutRight, qmap.get(Action.PutRight) - 10);
@@ -335,7 +313,7 @@ public class Agent {
                     //上移動.
                     qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOICE_OF_STEINER);
                 } else {
-                    //ルートから外れた時の処理.
+                    //なんやかんやでルートから外れた時の処理.
                     path_to_item.clear();
                     System.out.println("Path Cleared !!");
                 }
@@ -345,9 +323,10 @@ public class Agent {
 
         }
 
-        //Q値の情報を登録.
+        //Grid登録.
+        Grid grid = new Grid(current);
         grid.setQ_table(qmap);
-        if (!isSamePath(current)) q_paths.add(grid);
+        q_paths.add(grid);
     }
 
     public Action chooseAction() {
@@ -377,13 +356,6 @@ public class Agent {
             }
         }
         return false;
-    }
-
-    private Grid getGrid(Point point) {
-        for (Grid g : q_paths) {
-            if (g.getCoord().equals(point)) return g;
-        }
-        return new Grid(point);
     }
 
     public void add2Map(Action action, int[] value) {
@@ -433,6 +405,8 @@ public class Agent {
     //上下左右のノードをオープンする.
     private void openNode(Node parent, Point target) {
 
+        if (parent == null) return;
+
         if (parent.getPoint().equals(target)) {
             getPath(parent);
             Collections.reverse(path_to_item);
@@ -449,12 +423,10 @@ public class Agent {
             return;
         }
 
-        System.out.println(recursive);
-
         int parentX = parent.getPoint().x;
         int parentY = parent.getPoint().y;
 
-        Point[] points = new Point[]{
+        Point[] points = new Point[] {
                 new Point(parentX + 1, parentY), new Point(parentX - 1, parentY),
                 new Point(parentX, parentY - 1), new Point(parentX, parentY + 1)
         };
@@ -566,4 +538,8 @@ class Node {
         this.parent = parent;
     }
 
+}
+
+class Astar {
+    //A-star専用の関数を作成.最短経路を探索して、エージェントの移動先候補をする.
 }

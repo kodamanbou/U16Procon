@@ -11,8 +11,13 @@ public final class Map {
     private int round = 1;
     private static Map theInstance = new Map();
 
+    private ArrayList<Point> itemList;      //アイテム取得時にもともと床だった場所がブロックに変わる仕様に対応するため.
+    private ArrayList<Point> floorList;
+
     private Map() {
         map_data = new HashMap<>();
+        itemList = new ArrayList<>();
+        floorList = new ArrayList<>();
         File csv = new File("map.csv");
         if (csv.exists()) {
             load(csv);
@@ -53,7 +58,10 @@ public final class Map {
 
                 if (round == 2) {
                     Point p = new Point(point.x, point.y - 1);
-                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
+                    if (map_data.get(p) == 3) {
+                        floorList.add(point);
+                        put(point, 2);
+                    }
                 }
                 break;
             case 3:
@@ -64,7 +72,12 @@ public final class Map {
 
                 if (round == 2) {
                     Point p = new Point(point.x - 1, point.y);
-                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
+                    if (map_data.get(p) == 3) {
+                        if (map_data.get(p) == 3) {
+                            floorList.add(point);
+                            put(point, 2);
+                        }
+                    }
                 }
                 break;
             case 5:
@@ -75,7 +88,12 @@ public final class Map {
 
                 if (round == 2) {
                     Point p = new Point(point.x + 1, point.y);
-                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
+                    if (map_data.get(p) == 3) {
+                        if (map_data.get(p) == 3) {
+                            floorList.add(point);
+                            put(point, 2);
+                        }
+                    }
                 }
                 break;
             case 7:
@@ -85,8 +103,13 @@ public final class Map {
                 }
 
                 if (round == 2) {
-                    Point p = new Point(point.x, point.y + 1);
-                    if (map_data.get(p) == 3) put(new Point(point.x, point.y), 2);
+                    Point p = new Point(point.x, point.y - 1);
+                    if (map_data.get(p) == 3) {
+                        if (map_data.get(p) == 3) {
+                            floorList.add(point);
+                            put(point, 2);
+                        }
+                    }
                 }
                 break;
         }
@@ -164,8 +187,6 @@ public final class Map {
     }
 
     private boolean isExist(Point point) {
-        //すでにMapに情報が登録されている場合は、追加しないようにする。
-        //例：アイテム取った後に、元いた場所がブロックに変わるが、それは追加しない.
         for (Point path : map_data.keySet()) {
             if (path.equals(point)) return true;
         }
@@ -180,10 +201,8 @@ public final class Map {
     }
 
     private void put(Point point, int value) {
-        if (round == 2) {
-            for (Point p : map_data.keySet()) {
-                if (p.equals(point)) map_data.put(p, value);
-            }
+        for (Point p : map_data.keySet()) {
+            if (p.equals(point)) map_data.put(p, value);
         }
     }
 
@@ -200,12 +219,11 @@ public final class Map {
     }
 
     public ArrayList<Point> getItemList() {
-        ArrayList<Point> items = new ArrayList<>();
         for (Point point : map_data.keySet()) {
-            if (map_data.get(point) == 3) items.add(point);
+            if (map_data.get(point) == 3) itemList.add(point);
         }
 
-        return items;
+        return itemList;
     }
 
     public void showHistory() {
@@ -217,6 +235,9 @@ public final class Map {
     //Mapのsave.座標は反転済み.
     public void save() {
         try {
+            for (Point item : itemList) put(item, 3);
+            for (Point floor : floorList) put(floor, 0);
+            
             File csv = new File("map.csv");
             BufferedWriter bw = new BufferedWriter(new FileWriter(csv));
             for (Point point : map_data.keySet()) {
