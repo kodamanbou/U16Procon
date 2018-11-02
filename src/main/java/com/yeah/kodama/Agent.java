@@ -92,7 +92,7 @@ public class Agent {
         if (map.getRound() == 2) System.out.println("items : " + items.size());
 
         //Grid生成.
-        Grid grid = isSamePath(current) ? getGrid(current) : new Grid(current);
+        Grid grid = getGrid(current);
 
         //ここで細かいペナルティーを設定していく.
         //壁にぶつかる行動は、評価を下げる。
@@ -255,7 +255,7 @@ public class Agent {
         }
 
         /*やったらめったらPutしないようにする.(Mapを作成し、まだ通ってない座標にPutしたら若干のペナルティを与える)
-         * 同時に、未踏の領域へ進む行動を評価する.*/
+         * 同時に、未踏の領域へ進む行動を評価し、同じ場所は、行けば行くほど評価が下がる.*/
         if (!isSamePath(new Point(current.x, current.y - 1))) {
             qmap.put(Action.PutUp, qmap.get(Action.PutUp) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + WALK_SURVEY_REWARD);
@@ -263,31 +263,33 @@ public class Agent {
             Grid up = getGrid(new Point(current.x, current.y - 1));
             up.addFootPrint();
             qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) - up.getCount());
-            q_paths.add(up);
         }
 
         if (!isSamePath(new Point(current.x - 1, current.y))) {
             qmap.put(Action.PutLeft, qmap.get(Action.PutLeft) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + WALK_SURVEY_REWARD);
         } else {
-            grid.addFootPrint();
-            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - grid.getCount());
+            Grid left = getGrid(new Point(current.x - 1, current.y));
+            left.addFootPrint();
+            qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) - left.getCount());
         }
 
         if (!isSamePath(new Point(current.x + 1, current.y))) {
             qmap.put(Action.PutRight, qmap.get(Action.PutRight) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + WALK_SURVEY_REWARD);
         } else {
-            grid.addFootPrint();
-            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - grid.getCount());
+            Grid right = getGrid(new Point(current.x + 1, current.y));
+            right.addFootPrint();
+            qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) - right.getCount());
         }
 
         if (!isSamePath(new Point(current.x, current.y + 1))) {
             qmap.put(Action.PutDown, qmap.get(Action.PutDown) - BLINDLY_PUT_PENALTY);
             qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + WALK_SURVEY_REWARD);
         } else {
-            grid.addFootPrint();
-            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - grid.getCount());
+            Grid down = getGrid(new Point(current.x, current.y + 1));
+            down.addFootPrint();
+            qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) - down.getCount());
         }
 
         //やったらめったらLookやサーチをしないように、ペナルティを与える処理.
@@ -343,9 +345,9 @@ public class Agent {
 
         }
 
-        //Grid登録.
+        //Q値の情報を登録.
         grid.setQ_table(qmap);
-        q_paths.add(grid);
+        if (!isSamePath(current)) q_paths.add(grid);
     }
 
     public Action chooseAction() {
@@ -564,8 +566,4 @@ class Node {
         this.parent = parent;
     }
 
-}
-
-class Astar {
-    //A-star専用の関数を作成.最短経路を探索して、エージェントの移動先候補をする.
 }
