@@ -405,8 +405,6 @@ public class Agent {
     //上下左右のノードをオープンする.
     private void openNode(Node parent, Point target) {
 
-        if (parent == null) return;
-
         if (parent.getPoint().equals(target)) {
             getPath(parent);
             Collections.reverse(path_to_item);

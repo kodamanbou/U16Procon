@@ -91,7 +91,18 @@ public class Client {
 
     private void exit() {
         Map.getInstance().showHistory();
-        Map.getInstance().save();
+
+        if (Map.getInstance().getRound() == 1) {
+            Map.getInstance().save();
+        } else {
+            //ファイルの削除.
+            try {
+                File file = new File("map.csv");
+                if (file.exists()) file.delete();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         System.exit(0);
     }
 
