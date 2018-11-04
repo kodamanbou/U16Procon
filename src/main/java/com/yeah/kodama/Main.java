@@ -7,22 +7,35 @@ public class Main {
     public static void main(String[] args) {
 
         // write your code here
-        System.out.println("ポート番号？");
-        int port = Integer.parseInt(new Scanner(System.in).nextLine());
-        System.out.println("IPアドレス？");
-        String ip = new Scanner(System.in).nextLine();
-        String team_name = "kodamanbou";
+        Agent ai;
+        Client target = null;
+        Experiment experiment = null;
+
+        System.out.println("モード？   0:学習フェーズ, 1:対戦フェーズ");
+        int mode = Integer.parseInt(new Scanner(System.in).nextLine());
+
+        if (mode == 1) {
+            System.out.println("ポート番号？");
+            int port = Integer.parseInt(new Scanner(System.in).nextLine());
+            System.out.println("IPアドレス？");
+            String ip = new Scanner(System.in).nextLine();
+            String team_name = "kodamanbou";
+
+            target = new Client(ip, port, team_name);    //クライアント生成.
+            ai = new Agent(target.getReady());           //エージェント生成.
+        } else {
+            experiment = new Experiment();
+            ai = new Agent(experiment.getReady());
+        }
 
         int turn = 0;
-        Client target = new Client(ip, port, team_name);    //クライアント生成.
-        Agent ai = new Agent(target.getReady());                             //エージェント生成.
         int x = 0;
         int y = 0;      //相対座標.
         int[] value = new int[9];
 
         while (true) {
 
-            if (turn != 0) value = target.getReady();
+            if (turn != 0) value = mode == 1 ? target.getReady() : experiment.getReady();
             ai.init(x, y);
             ai.evaluate(value);
             Agent.Action action = ai.chooseAction();
