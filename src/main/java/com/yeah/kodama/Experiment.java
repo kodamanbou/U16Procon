@@ -1,7 +1,8 @@
 package com.yeah.kodama;
 
 public class Experiment {
-    //ゲームの進行を擬似的に再現する.
+    //ゲームの進行を擬似的に再現する.試合進行クラス.
+
     private int turn;
     private boolean isGameInProgress;
     Environment environment;
