@@ -39,5 +39,7 @@ public final class Environment {
 
     private void makeMap() {
         //公式ルールに則って自動でマップを生成してくれるプログラム.
+        //中心部をアイテムにする.
+        sample[8][7] = 3;
     }
 }
