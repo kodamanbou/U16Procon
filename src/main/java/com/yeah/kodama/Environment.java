@@ -42,4 +42,7 @@ public final class Environment {
         //中心部をアイテムにする.
         sample[8][7] = 3;
     }
+
+    public int[] walkUp() {
+    }
 }
