@@ -115,7 +115,7 @@ public final class Map {
         }
     }
 
-    public void inquiry(Point point, Agent.Action action, int[] value) {
+    public void inquiry(Point point, Action action, int[] value) {
         //ここでActionの結果を座標と一緒にHashMapにぶち込む.
         Point[] offset = getOffsetFromAction(point, action);
 
@@ -124,7 +124,7 @@ public final class Map {
         }
     }
 
-    private Point[] getOffsetFromAction(Point point, Agent.Action action) {
+    private Point[] getOffsetFromAction(Point point, Action action) {
         Point[] offset = new Point[9];
         int x = point.x;
         int y = point.y;
@@ -206,7 +206,7 @@ public final class Map {
         }
     }
 
-    public boolean isUselessSurvey(Point point, Agent.Action action) {
+    public boolean isUselessSurvey(Point point, Action action) {
         //ここで無駄なLookやSearchを使っていないかチェックする
         //8割型すでに格子の状態を観測済みなら、trueを返す.
         Point[] offset = getOffsetFromAction(point, action);

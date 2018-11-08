@@ -6,7 +6,7 @@ import java.util.HashMap;
 public class Grid {
 
     private Point coord;
-    private HashMap<Agent.Action, Float> q_table;
+    private HashMap<Action, Float> q_table;
     private int count;
 
     public Grid(Point coord) {
@@ -19,13 +19,13 @@ public class Grid {
         return coord;
     }
 
-    public HashMap<Agent.Action, Float> getQ_table() {
+    public HashMap<Action, Float> getQ_table() {
         return q_table;
     }
 
-    public void setQ_table(HashMap<Agent.Action, Float> q_map) {
+    public void setQ_table(HashMap<Action, Float> q_map) {
         //DeepCopy.
-        for (Agent.Action action : q_map.keySet()) {
+        for (Action action : q_map.keySet()) {
             this.q_table.put(action, q_map.get(action));
         }
     }

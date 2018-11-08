@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutionException;
 
-public class Client {
+public class Client implements Game {
 
     private Socket sock = null;
     private BufferedReader reader = null;

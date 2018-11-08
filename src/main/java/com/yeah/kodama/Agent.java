@@ -40,25 +40,6 @@ public class Agent {
     private Point current;
     private Map map;
 
-    public enum Action {
-        WalkUp,
-        WalkRight,
-        WalkLeft,
-        WalkDown,
-        LookUp,
-        LookRight,
-        LookLeft,
-        LookDown,
-        SearchUp,
-        SearchRight,
-        SearchLeft,
-        SearchDown,
-        PutUp,
-        PutRight,
-        PutLeft,
-        PutDown
-    }
-
     //For A*.
     private ArrayList<Node> openList;
     private ArrayList<Point> items;

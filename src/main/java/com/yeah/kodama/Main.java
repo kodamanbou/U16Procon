@@ -8,8 +8,7 @@ public class Main {
 
         // write your code here
         Agent ai;
-        Client target = null;
-        Experiment experiment = null;
+        Game target = null;
 
         System.out.println("モード？   0:学習フェーズ, 1:対戦フェーズ");
         int mode = Integer.parseInt(new Scanner(System.in).nextLine());
@@ -24,8 +23,8 @@ public class Main {
             target = new Client(ip, port, team_name);    //クライアント生成.
             ai = new Agent(target.getReady());           //エージェント生成.
         } else {
-            experiment = new Experiment();
-            ai = new Agent(experiment.getReady());
+            target = new Experiment();
+            ai = new Agent(target.getReady());
         }
 
         int turn = 0;
@@ -35,10 +34,10 @@ public class Main {
 
         while (true) {
 
-            if (turn != 0) value = mode == 1 ? target.getReady() : experiment.getReady();
+            if (turn != 0) value = target.getReady();
             ai.init(x, y);
             ai.evaluate(value);
-            Agent.Action action = ai.chooseAction();
+            Action action = ai.chooseAction();
 
             switch (action) {
                 case WalkUp:
