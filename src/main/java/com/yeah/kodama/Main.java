@@ -23,7 +23,7 @@ public class Main {
             target = new Client(ip, port, team_name);    //クライアント生成.
             ai = new Agent(target.getReady());           //エージェント生成.
         } else {
-            target = new Experiment();
+            target = Environment.getInstance();
             ai = new Agent(target.getReady());
         }
 

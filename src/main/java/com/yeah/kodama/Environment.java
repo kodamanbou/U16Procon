@@ -6,10 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public final class Environment {
+public final class Environment implements Game {
     private int[][] sample;
     private Point current;
     private int gameStatus = 0;
+    private int[] value = new int[9];
 
     private static Environment theInstance = new Environment();
 
@@ -23,16 +24,11 @@ public final class Environment {
     }
 
     public int[] getReady() {
-        int[] value = new int[10];
-        int index = 1;
+        int index = 0;
 
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
-                if (current.y + i < 0 || current.y + i > 16 || current.x + j < 0 || current.x + j > 16) {
-                    value[index] = 2;
-                } else {
-                    value[index] = sample[current.y + i][current.x + j];
-                }
+                value[index] = getGridInfo(current.x + j, current.y + i);
                 index++;
             }
         }
@@ -53,68 +49,130 @@ public final class Environment {
     }
 
     public int[] walkLeft() {
-        return new int[0];
+        current.translate(-1, 0);
+        return getReady();
     }
 
     public int[] walkRight() {
-        return new int[0];
+        current.translate(1, 0);
+        return getReady();
     }
 
     public int[] walkDown() {
-        return new int[0];
+        current.translate(0, 1);
+        return getReady();
     }
 
     public int[] lookUp() {
-        return new int[0];
+        int index = 0;
+        for (int i = -3; i < 0; i++) {
+            for (int j = -1; j < 2; j++) {
+                value[index] = getGridInfo(current.x + j, current.y + i);
+            }
+        }
+        return value;
     }
 
     public int[] lookLeft() {
-        return new int[0];
+        int index = 0;
+        for (int i = -1; i < 2; i++) {
+            for (int j = -3; j < 0; j++) {
+                value[index] = getGridInfo(current.x + j, current.y + i);
+            }
+        }
+        return value;
     }
 
     public int[] lookRight() {
-        return new int[0];
+        int index = 0;
+        for (int i = -1; i < 2; i++) {
+            for (int j = 1; j < 4; j++) {
+                value[index] = getGridInfo(current.x + j, current.y + i);
+            }
+        }
+        return value;
     }
 
     public int[] lookDown() {
-        return new int[0];
+        int index = 0;
+        for (int i = 1; i < 4; i++) {
+            for (int j = -1; j < 2; j++) {
+                value[index] = getGridInfo(current.x + j, current.y + i);
+            }
+        }
+        return value;
     }
 
     public int[] searchUp() {
-        return new int[0];
+        for (int i = 0; i < 9; i++) {
+            value[i] = getGridInfo(current.x, current.y - i - 1);
+        }
+        return value;
     }
 
     public int[] searchLeft() {
-        return new int[0];
+        for (int i = 0; i < 9; i++) {
+            value[i] = getGridInfo(current.x - i - 1, current.y);
+        }
+        return value;
     }
 
     public int[] searchRight() {
-        return new int[0];
+        for (int i = 0; i < 9; i++) {
+            value[i] = getGridInfo(current.x + i + 1, current.y);
+        }
+        return value;
     }
 
     public int[] searchDown() {
-        return new int[0];
+        for (int i = 0; i < 9; i++) {
+            value[i] = getGridInfo(current.x, current.y + i + 1);
+        }
+        return value;
     }
 
     public int[] putUp() {
-        return new int[0];
+        value = getReady();
+        if (getGridInfo(current.x, current.y - 1) != 2) {
+            value[1] = 2;
+        }
+        return value;
     }
 
     public int[] putLeft() {
-        return new int[0];
+        value = getReady();
+        if (getGridInfo(current.x - 1, current.y) != 2) {
+            value[3] = 2;
+        }
+        return value;
     }
 
     public int[] putRight() {
-        return new int[0];
+        value = getReady();
+        if (getGridInfo(current.x + 1, current.y) != 2) {
+            value[5] = 2;
+        }
+        return value;
     }
 
     public int[] putDown() {
-        return new int[0];
+        value = getReady();
+        if (getGridInfo(current.x, current.y + 1) != 2) {
+            value[7] = 2;
+        }
+        return value;
     }
 
     //積みゲー判定.
     private boolean isGameEnd() {
         //範囲外かどうかの判定.
         return current.x >= 0 && current.x < 15 && current.y >= 0 && current.y < 17;
+    }
+
+    private int getGridInfo(int x, int y) {
+        if (x < 0 || x > 14 || y < 0 || y > 16) {
+            return 2;
+        }
+        return sample[y][x];
     }
 }
