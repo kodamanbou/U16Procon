@@ -34,7 +34,6 @@ public class Agent {
 
     private HashMap<Action, Float> qmap;
     private ArrayList<Action> actions;
-    private int turn;
 
     private ArrayList<Grid> q_paths;
     private Point current;
@@ -53,7 +52,6 @@ public class Agent {
         q_paths = new ArrayList<>();
         map = Map.getInstance();
         map.getReady(new Point(0, 0), value);
-        turn = 0;
         items = map.getItemList();
         path_to_item = new ArrayList<>();
     }
@@ -325,8 +323,6 @@ public class Agent {
             }
         }
 
-        turn++;
-
         return actions.get(rand.nextInt(actions.size()));
     }
 
@@ -517,8 +513,4 @@ class Node {
         this.parent = parent;
     }
 
-}
-
-class Astar {
-    //A-star専用の関数を作成.最短経路を探索して、エージェントの移動先候補をする.
 }
