@@ -41,10 +41,11 @@ public final class Environment implements Game {
         Random random = new Random(System.currentTimeMillis());
         sample[8][7] = 3;
         current = new Point(random.nextInt(7), random.nextInt(8));      //現在地を設定.
-        for (int i = 0; i < 17; i++) {
-            for (int j = 0; j < 15; j++) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 8; j++) {
                 //Map
                 if (current.x != j || current.y != i) {
+                    sample[i][j] = 2;
                 }
             }
         }
