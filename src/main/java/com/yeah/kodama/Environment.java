@@ -9,8 +9,12 @@ import java.util.Random;
 public final class Environment implements Game {
     private int[][] sample;
     private Point current;
-    private int gameStatus = 0;
     private int[] value = new int[9];
+
+    private static final int GAME_ALIVE = 0;
+    private static final int GAME_END_SURROUND_BLOCK = 1;
+    private static final int GAME_END_PUT_BLOCK = 2;
+    private static final int GAME_END_TURN_END = 3;
 
     private static Environment theInstance = new Environment();
 
@@ -39,16 +43,26 @@ public final class Environment implements Game {
         //公式ルールに則って自動でマップを生成してくれるプログラム.
         //中心部をアイテムにする.
         Random random = new Random(System.currentTimeMillis());
-        sample[8][7] = 3;
         current = new Point(random.nextInt(7), random.nextInt(8));      //現在地を設定.
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 8; j++) {
+        sample[current.y][current.x] = 1;
+        sample[16 - current.y][14 - current.x] = sample[current.y][current.x];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 15; j++) {
                 //Map
                 if (current.x != j || current.y != i) {
-                    sample[i][j] = 2;
+                    int rand = new Random(System.currentTimeMillis()).nextInt(3);
+                    sample[i][j] = rand == 1 ? 3 : rand;
+                    sample[16 - i][14 - j] = sample[i][j];  //マップの反転.
                 }
             }
         }
+        sample[8][7] = 3;
+
+        //詰み判定を一度行い、ブロックに囲まれていたりしたら、ランダムに取り除く。
+        if (checkIfEnd() == GAME_END_SURROUND_BLOCK) {
+            int rand = new Random(System.currentTimeMillis()).nextInt(4);
+        }
+
     }
 
     public int[] walkUp() {
@@ -172,9 +186,17 @@ public final class Environment implements Game {
     }
 
     //積みゲー判定.
-    private boolean isGameEnd() {
+    private int checkIfEnd() {
         //範囲外かどうかの判定.
-        return current.x >= 0 && current.x < 15 && current.y >= 0 && current.y < 17;
+        if (current.x >= 0 && current.x < 15 && current.y >= 0 && current.y < 17) {
+            return GAME_END_SURROUND_BLOCK;
+        }
+
+        if (sample[current.y][current.x] == 2) {
+            return GAME_END_PUT_BLOCK;
+        }
+
+        return GAME_ALIVE;
     }
 
     private int getGridInfo(int x, int y) {
