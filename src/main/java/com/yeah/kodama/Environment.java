@@ -14,7 +14,6 @@ public final class Environment implements Game {
     private static final int GAME_ALIVE = 0;
     private static final int GAME_END_SURROUND_BLOCK = 1;
     private static final int GAME_END_PUT_BLOCK = 2;
-    private static final int GAME_END_TURN_END = 3;
 
     private static Environment theInstance = new Environment();
 
