@@ -10,6 +10,7 @@ public class Client implements Game {
     private Socket sock = null;
     private BufferedReader reader = null;
     private OutputStream os = null;
+    private boolean isGameAlive = true;
 
     public Client(String ip, int port, String team) {
         try {
@@ -20,6 +21,7 @@ public class Client implements Game {
             reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             os.write(team.getBytes("Shift-JIS"));
             System.out.println("チーム名 : " + team);
+            isGameAlive = true;
         } catch (Exception e) {
             e.printStackTrace();
             close();
@@ -103,7 +105,11 @@ public class Client implements Game {
                 e.printStackTrace();
             }
         }
-        System.exit(0);
+        isGameAlive = false;
+    }
+
+    public boolean isGameAlive() {
+        return isGameAlive;
     }
 
     public int[] walkUp() {

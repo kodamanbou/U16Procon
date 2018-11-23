@@ -19,4 +19,5 @@ public interface Game {
     int[] putLeft();
     int[] putRight();
     int[] putDown();
+    boolean isGameAlive();
 }

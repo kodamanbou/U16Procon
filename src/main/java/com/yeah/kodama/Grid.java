@@ -30,11 +30,4 @@ public class Grid {
         }
     }
 
-    public void addFootPrint() {
-        count++;
-    }
-
-    public int getCount() {
-        return count;
-    }
 }
