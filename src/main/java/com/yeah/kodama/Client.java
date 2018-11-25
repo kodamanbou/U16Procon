@@ -10,7 +10,7 @@ public class Client implements Game {
     private Socket sock = null;
     private BufferedReader reader = null;
     private OutputStream os = null;
-    private boolean isGameAlive = true;
+    private boolean isGameAlive;
 
     public Client(String ip, int port, String team) {
         try {
@@ -101,11 +101,13 @@ public class Client implements Game {
             try {
                 File file = new File("map.csv");
                 if (file.exists()) file.delete();
+                System.out.println("Map.csv was deleted.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         isGameAlive = false;
+        close();
     }
 
     public boolean isGameAlive() {

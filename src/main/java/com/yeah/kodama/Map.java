@@ -8,21 +8,16 @@ import java.util.HashMap;
 public final class Map {
 
     private HashMap<Point, Integer> map_data;
-    private int round = 1;
+    private int round;
     private static Map theInstance = new Map();
 
     private ArrayList<Point> itemList;      //アイテム取得時にもともと床だった場所がブロックに変わる仕様に対応するため.
-    private ArrayList<Point> floorList;
+    private ArrayList<Point> floorList;     //上に同じ.
 
     private Map() {
         map_data = new HashMap<>();
         itemList = new ArrayList<>();
         floorList = new ArrayList<>();
-        File csv = new File("map.csv");
-        if (csv.exists()) {
-            load(csv);
-            this.round = 2;
-        }
     }
 
     public static Map getInstance() {
@@ -34,6 +29,20 @@ public final class Map {
     }
 
     public void getReady(Point point, int[] value) {
+        //初期化処理.
+        map_data.clear();
+        itemList.clear();
+        floorList.clear();
+
+        //マップ読み込み.
+        File csv = new File("map.csv");
+        if (csv.exists()) {
+            load(csv);
+            this.round = 2;
+        } else {
+            this.round = 1;
+        }
+
         //周辺情報を取得してput.
         int i = 0;
         for (int j = -1; j < 2; j++) {
@@ -241,7 +250,7 @@ public final class Map {
             File csv = new File("map.csv");
             BufferedWriter bw = new BufferedWriter(new FileWriter(csv));
             for (Point point : map_data.keySet()) {
-                bw.write(String.valueOf(point.x * -1) + "," + String.valueOf(point.y * -1) + "," + map_data.get(point));
+                bw.write(point.x * -1 + "," + point.y * -1 + "," + map_data.get(point));
                 bw.newLine();
             }
             bw.flush();

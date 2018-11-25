@@ -20,11 +20,18 @@ public class Environment implements Game {
     private static final int GAME_END_OUT_OF_BOUNDS = 3;
     private static final int GAME_END_TURN_END = 666;
 
-    public Environment() {
+    public Environment(int mode) {
         turn = 0;
         isGameAlive = true;
         sample = new int[17][15];
-        makeMap();
+        current = new Point(0, 0);
+
+        if (mode == 0) {
+            makeMap();
+        } else {
+            loadMap();
+        }
+
     }
 
 
@@ -46,7 +53,6 @@ public class Environment implements Game {
     private void makeMap() {
         //公式ルールに則って自動でマップを生成してくれるプログラム.
         //中心部をアイテムにする.
-        turn = 0;
 
         Random random = new Random(System.currentTimeMillis());
         current = new Point(random.nextInt(8), random.nextInt(9));      //現在地を設定.
@@ -129,6 +135,36 @@ public class Environment implements Game {
 
     }
 
+    private void loadMap() {
+        //Mapの読み込み(2回戦目用).
+        turn = 0;
+
+        File[] files = new File(System.getProperty("user.dir")).listFiles(path -> path.isFile() && path.getName().contains(".map"));
+        BufferedReader br = null;
+        FileReader fr = null;
+        String line;
+        int column = 0;
+
+        try {
+            if (files[0] != null) {
+                fr = new FileReader(files[0]);
+                br = new BufferedReader(fr);
+
+                while ((line = br.readLine()) != null) {
+                    for (int i = 0; i < line.length(); i++) {
+                        int value = Integer.parseInt(line.split("")[i]);
+                        sample[16 - column][14 - i] = value;
+                    }
+                    column++;
+                }
+                System.out.println("Map loaded.");
+                files[0].delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public int[] walkUp() {
         if (sample[current.y - 1][current.x] == 3) {
             sample[current.y][current.x] = 2;
@@ -176,6 +212,7 @@ public class Environment implements Game {
                 value[index] = getGridInfo(current.x + j, current.y + i);
             }
         }
+        System.out.println("lu Executed.");
         return value;
     }
 
@@ -186,6 +223,7 @@ public class Environment implements Game {
                 value[index] = getGridInfo(current.x + j, current.y + i);
             }
         }
+        System.out.println("ll Executed.");
         return value;
     }
 
@@ -196,6 +234,7 @@ public class Environment implements Game {
                 value[index] = getGridInfo(current.x + j, current.y + i);
             }
         }
+        System.out.println("lr Executed.");
         return value;
     }
 
@@ -206,6 +245,7 @@ public class Environment implements Game {
                 value[index] = getGridInfo(current.x + j, current.y + i);
             }
         }
+        System.out.println("ld Executed.");
         return value;
     }
 
@@ -213,6 +253,7 @@ public class Environment implements Game {
         for (int i = 0; i < 9; i++) {
             value[i] = getGridInfo(current.x, current.y - i - 1);
         }
+        System.out.println("su Executed.");
         return value;
     }
 
@@ -220,6 +261,7 @@ public class Environment implements Game {
         for (int i = 0; i < 9; i++) {
             value[i] = getGridInfo(current.x - i - 1, current.y);
         }
+        System.out.println("sl Executed.");
         return value;
     }
 
@@ -227,6 +269,7 @@ public class Environment implements Game {
         for (int i = 0; i < 9; i++) {
             value[i] = getGridInfo(current.x + i + 1, current.y);
         }
+        System.out.println("sr Executed.");
         return value;
     }
 
@@ -234,6 +277,7 @@ public class Environment implements Game {
         for (int i = 0; i < 9; i++) {
             value[i] = getGridInfo(current.x, current.y + i + 1);
         }
+        System.out.println("sd Executed.");
         return value;
     }
 
@@ -242,6 +286,7 @@ public class Environment implements Game {
         if (getGridInfo(current.x, current.y - 1) != 2) {
             value[1] = 2;
         }
+        System.out.println("pu Executed.");
         return value;
     }
 
@@ -250,6 +295,7 @@ public class Environment implements Game {
         if (getGridInfo(current.x - 1, current.y) != 2) {
             value[3] = 2;
         }
+        System.out.println("pl Executed.");
         return value;
     }
 
@@ -258,6 +304,7 @@ public class Environment implements Game {
         if (getGridInfo(current.x + 1, current.y) != 2) {
             value[5] = 2;
         }
+        System.out.println("pr Executed.");
         return value;
     }
 
@@ -266,6 +313,7 @@ public class Environment implements Game {
         if (getGridInfo(current.x, current.y + 1) != 2) {
             value[7] = 2;
         }
+        System.out.println("pd Executed.");
         return value;
     }
 

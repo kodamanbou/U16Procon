@@ -15,8 +15,8 @@ public class Main {
         System.out.println("Please enter epics of trying.");
         int epic = Integer.parseInt(new Scanner(System.in).nextLine());
 
-        for (int i = 0; i < epic; i++) {
-            System.out.println("Epic :" + epic);
+        for (int i = 0; i < epic * 2; i++) {
+            System.out.println("Epic :" + i);
 
             if (mode == 1) {
                 System.out.println("ポート番号？");
@@ -28,7 +28,7 @@ public class Main {
                 target = new Client(ip, port, team_name);    //クライアント生成.
                 ai = new Agent(target.getReady());           //エージェント生成.
             } else {
-                target = new Environment();
+                target = new Environment(i % 2);
                 ai = new Agent(target.getReady());
             }
 
