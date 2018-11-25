@@ -171,7 +171,7 @@ public class Environment implements Game {
             sample[current.y - 1][current.x] = 0;
         }
         current.translate(0, -1);
-        System.out.println("Up Executed.");
+        System.out.println("wu Executed.");
         return getReady();
     }
 
@@ -181,7 +181,7 @@ public class Environment implements Game {
             sample[current.y][current.x - 1] = 0;
         }
         current.translate(-1, 0);
-        System.out.println("Left Executed.");
+        System.out.println("wl Executed.");
         return getReady();
     }
 
@@ -191,7 +191,7 @@ public class Environment implements Game {
             sample[current.y][current.x + 1] = 0;
         }
         current.translate(1, 0);
-        System.out.println("Right Executed.");
+        System.out.println("wr Executed.");
         return getReady();
     }
 
@@ -201,7 +201,7 @@ public class Environment implements Game {
             sample[current.y + 1][current.x] = 0;
         }
         current.translate(0, 1);
-        System.out.println("Down Executed.");
+        System.out.println("wd Executed.");
         return getReady();
     }
 
