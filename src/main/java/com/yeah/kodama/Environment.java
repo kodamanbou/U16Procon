@@ -13,7 +13,7 @@ public class Environment implements Game {
     private int[] value = new int[9];
     private int turn;
 
-    private boolean isGameAlive = true;
+    private boolean isGameAlive;
 
     private static final int GAME_END_SURROUND_BLOCK = 1;
     private static final int GAME_END_PUT_BLOCK = 2;
@@ -55,7 +55,7 @@ public class Environment implements Game {
         //中心部をアイテムにする.
 
         Random random = new Random(System.currentTimeMillis());
-        current = new Point(random.nextInt(8), random.nextInt(9));      //現在地を設定.
+        current = new Point(random.nextInt(7), random.nextInt(9));      //現在地を設定.
 
         System.out.println(current.toString());
 
@@ -139,7 +139,8 @@ public class Environment implements Game {
         //Mapの読み込み(2回戦目用).
         turn = 0;
 
-        File[] files = new File(System.getProperty("user.dir")).listFiles(path -> path.isFile() && path.getName().contains(".map"));
+        File[] files = new File(System.getProperty("user.dir"))
+                .listFiles(path -> path.isFile() && path.getName().contains(".map"));
         BufferedReader br = null;
         FileReader fr = null;
         String line;
@@ -154,10 +155,19 @@ public class Environment implements Game {
                     for (int i = 0; i < line.length(); i++) {
                         int value = Integer.parseInt(line.split("")[i]);
                         sample[16 - column][14 - i] = value;
+                        if (value == 5) current = new Point(14 - i, 16 - column);
                     }
                     column++;
                 }
                 System.out.println("Map loaded.");
+
+                for (int i = 0; i < 17; i++) {
+                    for (int j = 0; j < 15; j++) {
+                        System.out.print(sample[i][j]);
+                    }
+                    System.out.println();
+                }
+
                 files[0].delete();
             }
         } catch (Exception e) {
@@ -282,47 +292,39 @@ public class Environment implements Game {
     }
 
     public int[] putUp() {
-        value = getReady();
         if (getGridInfo(current.x, current.y - 1) != 2) {
-            value[1] = 2;
+            sample[current.y - 1][current.x] = 2;
         }
         System.out.println("pu Executed.");
-        return value;
+        return getReady();
     }
 
     public int[] putLeft() {
-        value = getReady();
         if (getGridInfo(current.x - 1, current.y) != 2) {
-            value[3] = 2;
+            sample[current.y][current.x - 1] = 2;
         }
         System.out.println("pl Executed.");
-        return value;
+        return getReady();
     }
 
     public int[] putRight() {
-        value = getReady();
         if (getGridInfo(current.x + 1, current.y) != 2) {
-            value[5] = 2;
+            sample[current.y][current.x + 1] = 2;
         }
         System.out.println("pr Executed.");
-        return value;
+        return getReady();
     }
 
     public int[] putDown() {
-        value = getReady();
         if (getGridInfo(current.x, current.y + 1) != 2) {
-            value[7] = 2;
+            sample[current.y + 1][current.x] = 2;
         }
         System.out.println("pd Executed.");
-        return value;
+        return getReady();
     }
 
     //積みゲー判定.
     private int checkIfEnd() {
-        //範囲外かどうかの判定.
-        if (current.x < 0 && current.x > 14 && current.y < 0 && current.y > 16) {
-            return GAME_END_OUT_OF_BOUNDS;
-        }
 
         if (sample[current.y][current.x] == 2) {
             return GAME_END_PUT_BLOCK;
