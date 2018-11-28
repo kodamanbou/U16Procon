@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Agent {
 
-    private static final long seed = System.currentTimeMillis();
+    private static final long seed = 666l;
 
     private double gamma = 0.99;
     private double learning_rate = 0.5;

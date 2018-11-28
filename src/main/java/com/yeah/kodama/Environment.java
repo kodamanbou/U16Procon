@@ -8,7 +8,8 @@ import java.util.*;
 import java.util.List;
 
 public class Environment implements Game {
-    private static final long seed = System.currentTimeMillis();
+
+    private static final long seed = 666l;
 
     private int[][] sample;
     private Point current;
@@ -38,6 +39,8 @@ public class Environment implements Game {
 
 
     public int[] getReady() {
+        if (checkIfEnd() != 0) exit(checkIfEnd());
+
         int index = 0;
 
         for (int i = -1; i < 2; i++) {
@@ -182,7 +185,6 @@ public class Environment implements Game {
         }
         current.translate(0, -1);
         System.out.println("wu Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -193,7 +195,6 @@ public class Environment implements Game {
         }
         current.translate(-1, 0);
         System.out.println("wl Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -204,7 +205,6 @@ public class Environment implements Game {
         }
         current.translate(1, 0);
         System.out.println("wr Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -215,7 +215,6 @@ public class Environment implements Game {
         }
         current.translate(0, 1);
         System.out.println("wd Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -227,7 +226,6 @@ public class Environment implements Game {
             }
         }
         System.out.println("lu Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -239,7 +237,6 @@ public class Environment implements Game {
             }
         }
         System.out.println("ll Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -251,7 +248,6 @@ public class Environment implements Game {
             }
         }
         System.out.println("lr Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -263,7 +259,6 @@ public class Environment implements Game {
             }
         }
         System.out.println("ld Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -272,7 +267,6 @@ public class Environment implements Game {
             value[i] = getGridInfo(current.x, current.y - i - 1);
         }
         System.out.println("su Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -281,7 +275,6 @@ public class Environment implements Game {
             value[i] = getGridInfo(current.x - i - 1, current.y);
         }
         System.out.println("sl Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -290,7 +283,6 @@ public class Environment implements Game {
             value[i] = getGridInfo(current.x + i + 1, current.y);
         }
         System.out.println("sr Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -299,7 +291,6 @@ public class Environment implements Game {
             value[i] = getGridInfo(current.x, current.y + i + 1);
         }
         System.out.println("sd Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return value;
     }
 
@@ -308,7 +299,6 @@ public class Environment implements Game {
             sample[current.y - 1][current.x] = 2;
         }
         System.out.println("pu Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -317,7 +307,6 @@ public class Environment implements Game {
             sample[current.y][current.x - 1] = 2;
         }
         System.out.println("pl Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -326,7 +315,6 @@ public class Environment implements Game {
             sample[current.y][current.x + 1] = 2;
         }
         System.out.println("pr Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -335,7 +323,6 @@ public class Environment implements Game {
             sample[current.y + 1][current.x] = 2;
         }
         System.out.println("pd Executed.");
-        if (checkIfEnd() != 0) exit(checkIfEnd());
         return getReady();
     }
 
@@ -383,13 +370,6 @@ public class Environment implements Game {
         }
         System.out.println("Dying code was " + code);
         isGameAlive = false;
-
-        //死に様を記録.
-        int[] value = getReady();
-        for (int i = 0; i < value.length; i++) {
-            System.out.print(value[i]);
-            if ((i + 1) % 3 == 0) System.out.println();
-        }
     }
 
     public boolean isGameAlive() {
