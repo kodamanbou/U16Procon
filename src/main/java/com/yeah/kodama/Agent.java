@@ -8,8 +8,6 @@ import java.util.Random;
 
 public class Agent {
 
-    private static final long seed = 666l;
-
     private double gamma = 0.99;
     private double learning_rate = 0.5;
     private double epsilon = 0.30;
@@ -25,7 +23,7 @@ public class Agent {
     private static final int GET_ITEM_REWARD = 30;
     private static final int ITEM_CLOSE_REWARD = 5;
     private static final int PUT_TRAP_REWARD = 20;
-    private static final int CHECK_TRAP_REWARD = 50;
+    private static final int CHECK_TRAP_REWARD = 100;
     private static final int CHOICE_OF_STEINER = 50;            //A-star用の報酬.
 
     private static final int
@@ -311,7 +309,7 @@ public class Agent {
     }
 
     public Action chooseAction() {
-        Random rand = new Random(seed);
+        Random rand = new Random(System.currentTimeMillis());
         float max_q = -999.0f;
 
         for (Action act : qmap.keySet()) {

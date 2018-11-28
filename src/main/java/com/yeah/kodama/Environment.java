@@ -9,8 +9,6 @@ import java.util.List;
 
 public class Environment implements Game {
 
-    private static final long seed = 666l;
-
     private int[][] sample;
     private Point current;
     private int[] value = new int[9];
@@ -57,7 +55,7 @@ public class Environment implements Game {
         //公式ルールに則って自動でマップを生成してくれるプログラム.
         //中心部をアイテムにする.
 
-        Random random = new Random(seed);
+        Random random = new Random();
         current = new Point(random.nextInt(7), random.nextInt(9));      //現在地を設定.
 
         System.out.println(current.toString());
@@ -66,7 +64,7 @@ public class Environment implements Game {
             for (int j = 1; j < 14; j++) {
                 //Map
                 if (current.x != j || current.y != i) {
-                    int rand = new Random(seed).nextInt(3);
+                    int rand = new Random().nextInt(3);
                     sample[i][j] = rand == 1 ? 3 : rand;
                     sample[16 - i][14 - j] = sample[i][j];  //マップの反転.
                 }
