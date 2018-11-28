@@ -113,7 +113,7 @@ public class Agent {
                         qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + GET_ITEM_REWARD);
                     }
                 } else {
-                    qmap.put(Action.LookUp, qmap.get(Action.LookLeft) + CHECK_TRAP_REWARD);
+                    qmap.put(Action.LookLeft, qmap.get(Action.LookLeft) + CHECK_TRAP_REWARD);
                 }
             }
         }
