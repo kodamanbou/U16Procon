@@ -8,6 +8,8 @@ import java.util.Random;
 
 public class Agent {
 
+    private static final long seed = System.currentTimeMillis();
+
     private double gamma = 0.99;
     private double learning_rate = 0.5;
     private double epsilon = 0.30;
@@ -309,7 +311,6 @@ public class Agent {
     }
 
     public Action chooseAction() {
-        long seed = System.currentTimeMillis();
         Random rand = new Random(seed);
         float max_q = -999.0f;
 
