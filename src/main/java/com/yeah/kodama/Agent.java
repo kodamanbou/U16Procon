@@ -32,7 +32,7 @@ public class Agent {
             BLOCK = 2,
             ITEM = 3;
 
-    private HashMap<Action, Float> qmap;
+    private HashMap<Action, Float> qmap;            //行動とその行動の評価値を、Key-Value形式で保持する.
     private ArrayList<Action> actions;
 
     private ArrayList<Grid> q_paths;
