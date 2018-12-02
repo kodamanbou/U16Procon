@@ -334,6 +334,15 @@ public class Agent {
         return false;
     }
 
+    public HashMap<Action, Float> getQValues() {
+        for (Grid g : q_paths) {
+            if (g.getCoord().equals(current)) {
+                return g.getQ_table();
+            }
+        }
+        return null;
+    }
+
     public void add2Map(Action action, int[] value) {
         //Mapに登録する処理.
         switch (action) {

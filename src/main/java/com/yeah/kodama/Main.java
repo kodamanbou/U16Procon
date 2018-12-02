@@ -1,5 +1,6 @@
 package com.yeah.kodama;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -18,6 +19,11 @@ public class Main {
         for (int i = 0; i < epic * 2; i++) {
             System.out.println("Epic :" + i);
 
+            int turn = 0;
+            int x = 0;
+            int y = 0;      //相対座標.
+            int[] value = new int[9];
+
             if (mode == 1) {
                 System.out.println("ポート番号？");
                 int port = Integer.parseInt(new Scanner(System.in).nextLine());
@@ -29,13 +35,9 @@ public class Main {
                 ai = new Agent(target.getReady());           //エージェント生成.
             } else {
                 target = new Environment(i % 2);
-                ai = new Agent(target.getReady());
+                value = target.getReady();
+                ai = new Agent(value);
             }
-
-            int turn = 0;
-            int x = 0;
-            int y = 0;      //相対座標.
-            int[] value = new int[9];
 
             while (target.isGameAlive()) {
 
@@ -104,6 +106,14 @@ public class Main {
 
                 turn++;
             }
+
+            HashMap<Action, Float> qvalues = ai.getQValues();
+            if (qvalues != null) {
+                for (Action action : qvalues.keySet()) {
+                    System.out.println(action.toString() + ": " + qvalues.get(action));
+                }
+            }
+
         }
     }
 }

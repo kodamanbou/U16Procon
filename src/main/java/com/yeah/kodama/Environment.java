@@ -221,6 +221,7 @@ public class Environment implements Game {
         for (int i = -3; i < 0; i++) {
             for (int j = -1; j < 2; j++) {
                 value[index] = getGridInfo(current.x + j, current.y + i);
+                index++;
             }
         }
         System.out.println("lu Executed.");
@@ -232,6 +233,7 @@ public class Environment implements Game {
         for (int i = -1; i < 2; i++) {
             for (int j = -3; j < 0; j++) {
                 value[index] = getGridInfo(current.x + j, current.y + i);
+                index++;
             }
         }
         System.out.println("ll Executed.");
@@ -243,6 +245,7 @@ public class Environment implements Game {
         for (int i = -1; i < 2; i++) {
             for (int j = 1; j < 4; j++) {
                 value[index] = getGridInfo(current.x + j, current.y + i);
+                index++;
             }
         }
         System.out.println("lr Executed.");
@@ -254,6 +257,7 @@ public class Environment implements Game {
         for (int i = 1; i < 4; i++) {
             for (int j = -1; j < 2; j++) {
                 value[index] = getGridInfo(current.x + j, current.y + i);
+                index++;
             }
         }
         System.out.println("ld Executed.");
