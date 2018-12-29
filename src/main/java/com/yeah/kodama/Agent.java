@@ -8,17 +8,12 @@ import java.util.Random;
 
 public class Agent {
 
-    private double gamma = 0.99;
-    private double learning_rate = 0.5;
-    private double epsilon = 0.30;
-    private double total_reward = 0;
-
     private static final int HIT_WALL_PENALTY = 100;           //ペナルティはあとで調整
     private static final int ENEMY_ENCOUNTER_PENALTY = 100;
-    private static final int WALK_SURVEY_REWARD = 10;
     private static final int SELF_KILL_PENALTY = 100;
     private static final int BLINDLY_PUT_PENALTY = 30;
     private static final int USELESS_SURVEY_PENALTY = 30;
+    private static final int WALK_SURVEY_REWARD = 10;
     private static final int ENEMY_DEFEAT_REWARD = 100;
     private static final int GET_ITEM_REWARD = 30;
     private static final int ITEM_CLOSE_REWARD = 5;

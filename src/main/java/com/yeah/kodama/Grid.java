@@ -7,12 +7,10 @@ public class Grid {
 
     private Point coord;
     private HashMap<Action, Float> q_table;
-    private int count;
 
     public Grid(Point coord) {
         this.coord = coord;
         this.q_table = new HashMap<>();
-        this.count = 0;
     }
 
     public Point getCoord() {

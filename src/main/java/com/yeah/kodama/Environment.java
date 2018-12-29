@@ -1,11 +1,9 @@
 package com.yeah.kodama;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 public class Environment implements Game {
 
@@ -18,7 +16,6 @@ public class Environment implements Game {
 
     private static final int GAME_END_SURROUND_BLOCK = 1;
     private static final int GAME_END_PUT_BLOCK = 2;
-    private static final int GAME_END_OUT_OF_BOUNDS = 3;
     private static final int GAME_END_TURN_END = 666;
 
     public Environment(int mode) {
@@ -109,7 +106,7 @@ public class Environment implements Game {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmssSSS");
         File file = new File(sdf.format(calendar.getTime()) + ".map");
-        FileWriter fw = null;
+        FileWriter fw;
         StringBuilder sb = new StringBuilder();
 
         try {
@@ -142,8 +139,8 @@ public class Environment implements Game {
 
         File[] files = new File(System.getProperty("user.dir"))
                 .listFiles(path -> path.isFile() && path.getName().contains(".map"));
-        BufferedReader br = null;
-        FileReader fr = null;
+        BufferedReader br;
+        FileReader fr;
         String line;
         int column = 0;
 

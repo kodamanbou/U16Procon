@@ -20,15 +20,15 @@ public final class Map {
         floorList = new ArrayList<>();
     }
 
-    public static Map getInstance() {
+    static Map getInstance() {
         return theInstance;
     }
 
-    public int getRound() {
+    int getRound() {
         return round;
     }
 
-    public void getReady(Point point, int[] value) {
+    void getReady(Point point, int[] value) {
         //初期化処理.
         map_data.clear();
         itemList.clear();
@@ -56,7 +56,7 @@ public final class Map {
         }
     }
 
-    public void walkTo(Point point, int direction, int[] value) {
+    void walkTo(Point point, int direction, int[] value) {
         //Walk〇〇関数による移動の結果をMapに登録する処理.
         switch (direction) {
             case 1:
@@ -124,8 +124,8 @@ public final class Map {
         }
     }
 
-    public void inquiry(Point point, Action action, int[] value) {
-        //ここでActionの結果を座標と一緒にHashMapにぶち込む.
+    void inquiry(Point point, Action action, int[] value) {
+        //ここでActionの結果を座標と一緒にHashMapに入れる.
         Point[] offset = getOffsetFromAction(point, action);
 
         for (int i = 0; i < 9; i++) {
@@ -202,7 +202,7 @@ public final class Map {
         return false;
     }
 
-    public int get(Point point) {
+    int get(Point point) {
         for (Point p : map_data.keySet()) {
             if (p.equals(point)) return map_data.get(p);
         }
@@ -215,19 +215,19 @@ public final class Map {
         }
     }
 
-    public boolean isUselessSurvey(Point point, Action action) {
+    boolean isUselessSurvey(Point point, Action action) {
         //ここで無駄なLookやSearchを使っていないかチェックする
-        //8割型すでに格子の状態を観測済みなら、trueを返す.
+        //全ての格子の状態を観測済みなら、trueを返す.
         Point[] offset = getOffsetFromAction(point, action);
         int count = 0;
         for (Point p : offset) {
             if (isExist(p)) count++;
-            if (count > 6) return true;
+            if (count == 9) return true;
         }
         return false;
     }
 
-    public ArrayList<Point> getItemList() {
+    ArrayList<Point> getItemList() {
         for (Point point : map_data.keySet()) {
             if (map_data.get(point) == 3) itemList.add(point);
         }
@@ -235,14 +235,14 @@ public final class Map {
         return itemList;
     }
 
-    public void showHistory() {
+    void showHistory() {
         for (Point point : map_data.keySet()) {
             System.out.println("(" + point.x + ", " + point.y + ")" + "   " + map_data.get(point));
         }
     }
 
     //Mapのsave.座標は反転済み.
-    public void save() {
+    void save() {
         try {
             for (Point item : itemList) put(item, 3);
             for (Point floor : floorList) put(floor, 0);
@@ -260,7 +260,7 @@ public final class Map {
         }
     }
 
-    public void load(File file) {
+    private void load(File file) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -273,5 +273,9 @@ public final class Map {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public HashMap<Point, Integer> getMap_data() {
+        return map_data;
     }
 }
