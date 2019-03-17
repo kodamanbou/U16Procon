@@ -19,7 +19,7 @@ public class Agent {
     private static final int ITEM_CLOSE_REWARD = 5;
     private static final int PUT_TRAP_REWARD = 20;
     private static final int CHECK_TRAP_REWARD = 100;
-    private static final int CHOICE_OF_STEINER = 50;            //A-star用の報酬.
+    private static final int A_STAR_REWARD = 50;            //A-star用の報酬.
 
     private static final int
             FLOOR = 0,
@@ -276,16 +276,16 @@ public class Agent {
                 Point moveTo = path_to_item.get(0);
                 if (moveTo.x - current.x == 1) {
                     //右移動.
-                    qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + CHOICE_OF_STEINER);
+                    qmap.put(Action.WalkRight, qmap.get(Action.WalkRight) + A_STAR_REWARD);
                 } else if (moveTo.x - current.x == -1) {
                     //左移動.
-                    qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + CHOICE_OF_STEINER);
+                    qmap.put(Action.WalkLeft, qmap.get(Action.WalkLeft) + A_STAR_REWARD);
                 } else if (moveTo.y - current.y == 1) {
                     //下移動.
-                    qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + CHOICE_OF_STEINER);
+                    qmap.put(Action.WalkDown, qmap.get(Action.WalkDown) + A_STAR_REWARD);
                 } else if (moveTo.y - current.y == -1) {
                     //上移動.
-                    qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + CHOICE_OF_STEINER);
+                    qmap.put(Action.WalkUp, qmap.get(Action.WalkUp) + A_STAR_REWARD);
                 } else {
                     //なんやかんやでルートから外れた時の処理.
                     path_to_item.clear();
